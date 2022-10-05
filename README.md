@@ -1,2 +1,3 @@
-# dreamtomation_sunspot
-Solar Monitoring System
+# Dreamtomation sunspot software
+
+Remote parameters monitoring software "sunspot" 
