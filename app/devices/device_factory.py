@@ -5,6 +5,7 @@
 Devices factory class.
 """
 
+from devices.vendors.dummy.dummy.dummy import Dummy
 from devices.vendors.huawei.sun2000.sun2000 import SUN2000
 
 class DevicesFactory:
@@ -42,10 +43,13 @@ class DevicesFactory:
         else:
             options = settings["options"]
 
-        if vendor == "huawei" and model == "sun2000":
+        if vendor == "dummy" and model == "dummy":
+            instance = Dummy(options, provider, adapter)
+
+        elif vendor == "huawei" and model == "sun2000":
             instance = SUN2000(options, provider, adapter)
 
         else:
-            raise Exception(f"Unsupported master model({model}), vendor({vendor})")
+            raise Exception(f"Unsupported device model({model}), vendor({vendor})")
 
         return instance

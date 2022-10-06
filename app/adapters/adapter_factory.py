@@ -49,6 +49,6 @@ class AdaptersFactory:
             instance = ThingsBoardMQTTClient(host, port, token=token)
 
         else:
-            raise Exception(f"Unsupported master model({model}), vendor({vendor})")
+            raise Exception(f"Unsupported adapter version({version}), vendor({vendor})")
 
         return instance

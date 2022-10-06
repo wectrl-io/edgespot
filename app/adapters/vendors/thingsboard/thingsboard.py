@@ -151,6 +151,9 @@ class ThingsBoardMQTTClient(object):
         # Shift to [ms] band.
         time_stamp *= 1000
 
+        # Make it integer.
+        time_stamp = int(time_stamp)
+
         values = {'ts' : time_stamp, 'values' : values}
         values = json.dumps(values)
         self.__mqtt_client.publish("v1/devices/me/telemetry", values) #topic-v1/devices/me/telemetry

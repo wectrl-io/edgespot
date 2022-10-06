@@ -13,17 +13,15 @@ class SUN2000(BaseDevice):
     """Huawei SUN2000 device.
     """
 
+#region Attributes
+
     __logger = None
     """Logger
     """
 
-    __timer = None
-    """Update timer.
-    """
+#endregion
 
-    __update_period = 1
-    """Update period.
-    """
+#region Constructor
 
     def __init__(self, options, provider, adapter):
         """Constructor
@@ -39,13 +37,7 @@ class SUN2000(BaseDevice):
         # Set logger.
         self.__logger = get_logger(__name__)
 
-        # Set timer.
-        self.__timer = Timer(self.__update_period)
-        self.__timer.set_callback(self.__timer_cb)
-
-    def __get_params(self):
-
-        return {"value1": random.randint(0, 9), "value2": random.randint(0, 9)}
+#endregion
 
 #region Public Methods
 
@@ -55,7 +47,6 @@ class SUN2000(BaseDevice):
 
     def update(self):
 
-        self.__timer.update()
         self._adapter.update()
 
     def shutdown(self):
@@ -65,17 +56,5 @@ class SUN2000(BaseDevice):
 #endregion
 
 #region Private Methods
-
-    def __timer_cb(self, timer):
-
-        timer.clear()
-
-        params = self.__get_params()
-
-        data = self._provider.get_data(params)
-
-        self._adapter.send_telemetry(data)
-
-        # self.__logger.info("Working process")
 
 #endregion
