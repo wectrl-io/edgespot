@@ -154,8 +154,11 @@ class ThingsBoardMQTTClient(object):
         # Make it integer.
         time_stamp = int(time_stamp)
 
+        # Create message.
         values = {'ts' : time_stamp, 'values' : values}
         values = json.dumps(values)
+
+        # Send message.
         self.__mqtt_client.publish("v1/devices/me/telemetry", values) #topic-v1/devices/me/telemetry
 
 #endregion
