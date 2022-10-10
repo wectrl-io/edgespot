@@ -3,6 +3,7 @@
 
 import signal
 import sys
+import traceback
 
 from utils.logger import crate_log_file, get_logger
 from utils.settings import ApplicationSettings
@@ -84,4 +85,5 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as exception:
-        __LOGGER.error(exception)
+        __LOGGER.error(traceback.format_exc())
+        sys.exit(0)
