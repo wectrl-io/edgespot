@@ -74,7 +74,11 @@ class SUN2000(BaseDevice):
 
         timer.clear()
 
-        params = {"value1": random.randint(0, 9), "value2": random.randint(0, 9)}
+        params = {
+            "value1": random.randint(0, 9),
+            "value2": random.randint(0, 9),
+            "value3": self.__gpio_state[7] * 10}\
+            # Add feedback for visual fun! Only for party purpose.
 
         # data = self._provider.get_data(params)
 
