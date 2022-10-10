@@ -61,7 +61,7 @@ class Dummy(BaseDevice):
 
     def shutdown(self):
 
-        pass
+        self._adapter.disconnect()
 
 #endregion
 
@@ -79,7 +79,7 @@ class Dummy(BaseDevice):
 
         data = self._provider.get_data(params)
 
-        self._adapter.send_telemetry(data)
+        # self._adapter.send_telemetry(data)
 
         # self.__logger.info("Working process")
 
