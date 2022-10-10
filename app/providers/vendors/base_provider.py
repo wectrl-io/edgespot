@@ -35,7 +35,7 @@ class BaseProvider(object):
         return self._vendor
 
     def __str__(self):
-        name = self._get_options("name")
+        name = self._get_option("name")
         return f"name({name})/vendor({self.vendor})/model({self.model})"
 
     __repr__ = __str__
@@ -48,7 +48,7 @@ class BaseProvider(object):
         self._options = options
 
 
-    def _get_options(self, name):
+    def _get_option(self, name):
 
         if name not in self._options:
             raise Exception(f"Invalid option: {name}")
