@@ -50,24 +50,6 @@ class SUN2000(BaseDevice):
 
 #endregion
 
-#region Public Methods
-
-    def init(self):
-
-        self._adapter.connect()
-        self._adapter.subscribe(gpio_state=self.__get_gpio_status, callback=self.__callback)
-
-    def update(self):
-
-        self.__timer.update()
-        self._adapter.update()
-
-    def shutdown(self):
-
-        self._adapter.disconnect()
-
-#endregion
-
 #region Private Methods
 
     def __timer_cb(self, timer):
@@ -117,5 +99,23 @@ class SUN2000(BaseDevice):
 
             # TODO: Send data thought the provider to the IO island.
             self._provider
+
+#endregion
+
+#region Public Methods
+
+    def init(self):
+
+        self._adapter.connect()
+        self._adapter.subscribe(gpio_state=self.__get_gpio_status, callback=self.__callback)
+
+    def update(self):
+
+        self.__timer.update()
+        self._adapter.update()
+
+    def shutdown(self):
+
+        self._adapter.disconnect()
 
 #endregion
