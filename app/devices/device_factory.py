@@ -5,6 +5,7 @@
 Devices factory class.
 """
 
+from devices.vendors.cwt.mb308v.mb308v import CWTMB308V
 from devices.vendors.dummy.dummy.dummy import Dummy
 from devices.vendors.huawei.sun2000.sun2000 import SUN2000
 
@@ -48,6 +49,10 @@ class DevicesFactory:
 
         elif vendor == "huawei" and model == "sun2000":
             instance = SUN2000(options, provider, adapter)
+
+        elif vendor == "cwt" and model == "cwt_mb308v":
+            instance = CWTMB308V(options, provider, adapter)
+
 
         else:
             raise Exception(f"Unsupported device model({model}), vendor({vendor})")
