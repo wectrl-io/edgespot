@@ -1,20 +1,32 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
-import time
-
 from providers.vendors.base_provider import BaseProvider
 
 from pymodbus.client.sync import ModbusTcpClient as ModbusClient
 # from pymodbus.transaction import ModbusSocketFramer as ModbusFramer
 
-from pymodbus.transaction import ModbusRtuFramer as ModbusFramer
-# from pymodbus.transaction import ModbusBinaryFramer as ModbusFramer
-# from pymodbus.transaction import ModbusAsciiFramer as ModbusFramer
+from pymodbus.transaction import ModbusRtuFramer
+from pymodbus.transaction import ModbusBinaryFramer
+from pymodbus.transaction import ModbusAsciiFramer
 
 class NB114(BaseProvider):
     """NB114 master device.
     """
+
+    __client = None
+    """Modbus Master
+    """
+
+    @property
+    def communicator(self):
+        """Communicator instance.
+
+        Returns:
+            Anu: Communicator instance.
+        """
+
+        return self.__client
 
     def __init__(self, options):
         """Constructor
@@ -26,34 +38,23 @@ class NB114(BaseProvider):
         self._vendor = "EByte"
         self._model = "NB114"
 
-    def read_device_data(self):
+        ip = self._get_option("ip")
+        port = self._get_option("port")
+        framer_type = self._get_option("framer_type")
+        framer = self.__get_framer(framer_type)
 
-        # ----------------------------------------------------------------------- #
-        # Initialize the client
-        # ----------------------------------------------------------------------- #
+        self.__client = ModbusClient(ip, port=port, framer=framer)
 
-        ip = self.__get_option("ip")
-        port = self.__get_option("port")
+    def __get_framer(self, framer_type):
 
-        client = ModbusClient(ip, port=port, framer=ModbusFramer)
-        client.connect()
+        framer = None
 
-        # ----------------------------------------------------------------------- #
-        # perform your requests
-        # ----------------------------------------------------------------------- #
-        for _ in range(0, 10):
-            rq = client.write_coil(1, True)
-            time.sleep(0.1)
-            # rr = client.read_coils(1, 1)
-            # assert not rq.isError()  # nosec test that we are not an error
-            # assert rr.bits[0]  # nosec test the expected value
-            rq = client.write_coil(1, False)
-            time.sleep(0.1)
-            # rr = client.read_coils(1, 1)
-            # assert not rq.isError()  # nosec test that we are not an error
-            # assert rr.bits[0]  # nosec test the expected value
-
-        # ----------------------------------------------------------------------- #
-        # close the client
-        # ---------------------------------------------------------------------- #
-        client.close()
+        if framer_type == "rtu":
+            framer = ModbusRtuFramer
+        elif framer_type == "bin":
+            framer = ModbusBinaryFramer
+        elif framer_type == "ascii":
+            framer = ModbusAsciiFramer
+        else:
+            raise Exception(f"Unsupported framer type({framer_type})")
+        return framer
