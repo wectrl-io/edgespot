@@ -14,19 +14,29 @@ class NB114(BaseProvider):
     """NB114 master device.
     """
 
+#region Attributes
+
     __client = None
     """Modbus Master
     """
+
+#endregion
+
+#region Propertyes
 
     @property
     def communicator(self):
         """Communicator instance.
 
         Returns:
-            Anu: Communicator instance.
+            Any: Communicator instance.
         """
 
         return self.__client
+
+#endregion
+
+#region Constructor
 
     def __init__(self, options):
         """Constructor
@@ -45,6 +55,10 @@ class NB114(BaseProvider):
 
         self.__client = ModbusClient(ip, port=port, framer=framer)
 
+#endregion
+
+#region Private Methods
+
     def __get_framer(self, framer_type):
 
         framer = None
@@ -58,3 +72,5 @@ class NB114(BaseProvider):
         else:
             raise Exception(f"Unsupported framer type({framer_type})")
         return framer
+
+#endregion
