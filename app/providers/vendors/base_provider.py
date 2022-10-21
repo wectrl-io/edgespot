@@ -48,10 +48,13 @@ class BaseProvider(object):
         self._options = options
 
 
-    def _get_option(self, name):
+    def _get_option(self, name, default=None):
 
-        if name not in self._options:
+        if name not in self._options and default is None:
             raise Exception(f"Invalid option: {name}")
+
+        if name not in self._options and default is not None:
+            return default
 
         return self._options[name]
 
