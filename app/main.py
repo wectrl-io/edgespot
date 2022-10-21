@@ -67,17 +67,17 @@ def main():
     # The mantra ...Ohmmm
 
     # Create
-    worker = Sunspot()
+    sunspot = Sunspot()
 
     # Init
-    worker.init()
+    sunspot.init()
 
     # Update
     while not __TIME_TO_STOP:
-        worker.update()
+        sunspot.update()
 
     # Shutdown
-    worker.shutdown()
+    sunspot.shutdown()
 
     __LOGGER.info("Application stopped.")
 
