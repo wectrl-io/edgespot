@@ -5,6 +5,8 @@ import os
 
 import yaml
 
+from utils.yaml_loader import Loader
+
 class ApplicationSettings:
     """Application settings class."""
 
@@ -113,7 +115,7 @@ class ApplicationSettings:
 
         if self.exists:
             with open(self.__file_name, "rt", encoding="utf-8") as stream:
-                self.__config = yaml.load(stream, Loader=yaml.FullLoader)
+                self.__config = yaml.load(stream, Loader=Loader)
                 stream.close()
 
     def save(self):
