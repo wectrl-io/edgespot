@@ -37,8 +37,8 @@ class Loader(yaml.SafeLoader):
 
         filename = os.path.join(self._root, self.construct_scalar(node))
 
-        with open(filename, 'r') as f:
-            return yaml.load(f, Loader)
+        with open(filename, 'rt') as stream:
+            return yaml.load(stream, Loader)
 
 #endregion
 
