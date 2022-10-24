@@ -117,6 +117,8 @@ class ApplicationSettings:
             with open(self.__file_name, "rt", encoding="utf-8") as stream:
                 self.__config = yaml.load(stream, Loader=Loader)
                 stream.close()
+                print(self.__config)
+                print()
 
     def save(self):
         """Read YAML file."""
