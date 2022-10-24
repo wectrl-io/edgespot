@@ -49,7 +49,7 @@ def main():
     settings = ApplicationSettings.get_instance()
 
     # Read settings content.
-    settings.read()
+    settings.load()
 
     # Create log.
     crate_log_file()

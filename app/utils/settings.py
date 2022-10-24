@@ -59,15 +59,15 @@ class ApplicationSettings:
         return value
 
     @property
-    def devices(self):
-        """Devices settings.
+    def endpoints(self):
+        """Endpoints settings.
         Returns
         -------
         list
-            Devices settings list.
+            Endpoints settings list.
         """
 
-        return self.__config["devices"]
+        return self.__config["endpoints"]
 
     @property
     def path(self):
@@ -104,21 +104,19 @@ class ApplicationSettings:
         else:
             self.__file_name = file_name
 
-        self.read()
+        self.load()
 
 #endregion
 
 #region Public Methods
 
-    def read(self):
+    def load(self):
         """Read YAML file."""
 
         if self.exists:
             with open(self.__file_name, "rt", encoding="utf-8") as stream:
                 self.__config = yaml.load(stream, Loader=Loader)
                 stream.close()
-                print(self.__config)
-                print()
 
     def save(self):
         """Read YAML file."""
