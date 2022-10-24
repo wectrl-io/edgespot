@@ -43,10 +43,10 @@ class Sunspot(object):
         self.__settings = ApplicationSettings.get_instance()
 
         self.__devices = Devices()
-        for device_settings in self.__settings.devices:
-            adapter = AdaptersFactory.create(device_settings["adapter"])
-            provider = ProvidersFactory.create(device_settings["provider"])
-            device = DevicesFactory.create(device_settings["device"], provider, adapter)           
+        for ep_settings in self.__settings.endpoints:
+            adapter = AdaptersFactory.create(ep_settings["adapter"])
+            provider = ProvidersFactory.create(ep_settings["provider"])
+            device = DevicesFactory.create(ep_settings["device"], provider, adapter)
             self.__devices.append(device)
 
 #endregion
