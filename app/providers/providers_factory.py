@@ -5,7 +5,9 @@
 Providers factory
 """
 
+from providers.vendors.dummy.dummy.dummy import Dummy
 from providers.vendors.ebyte.nb114.nb114 import NB114
+from providers.vendors.native.uart.uart import NativeUart
 
 class ProvidersFactory(object):
     """Providers factory.
@@ -42,10 +44,16 @@ class ProvidersFactory(object):
         else:
             options = settings["options"]
 
-        if vendor == "ebyte" and model == "nb114":
+        if vendor == "dummy" and model == "dummy":
+            instance = Dummy(options)
+
+        elif vendor == "ebyte" and model == "nb114":
             instance = NB114(options)
 
+        elif vendor == "native" and model == "uart":
+            instance = NativeUart(options)
+
         else:
-            raise Exception(f"Unsupported master model({model}), vendor({vendor})")
+            raise Exception(f"Unsupported provider model({model}), vendor({vendor})")
 
         return instance

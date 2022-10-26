@@ -3,6 +3,7 @@
 
 import signal
 import sys
+import traceback
 
 from utils.logger import crate_log_file, get_logger
 from utils.settings import ApplicationSettings
@@ -48,7 +49,7 @@ def main():
     settings = ApplicationSettings.get_instance()
 
     # Read settings content.
-    settings.read()
+    settings.load()
 
     # Create log.
     crate_log_file()
@@ -66,17 +67,17 @@ def main():
     # The mantra ...Ohmmm
 
     # Create
-    worker = Sunspot()
+    sunspot = Sunspot()
 
     # Init
-    worker.init()
+    sunspot.init()
 
     # Update
     while not __TIME_TO_STOP:
-        worker.update()
+        sunspot.update()
 
     # Shutdown
-    worker.shutdown()
+    sunspot.shutdown()
 
     __LOGGER.info("Application stopped.")
 
@@ -84,4 +85,5 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as exception:
-        __LOGGER.error(exception)
+        __LOGGER.error(traceback.format_exc())
+        sys.exit(0)

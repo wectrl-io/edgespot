@@ -5,6 +5,8 @@ import os
 
 import yaml
 
+from utils.yaml_loader import Loader
+
 class ApplicationSettings:
     """Application settings class."""
 
@@ -57,15 +59,15 @@ class ApplicationSettings:
         return value
 
     @property
-    def devices(self):
-        """Devices settings.
+    def endpoints(self):
+        """Endpoints settings.
         Returns
         -------
         list
-            Devices settings list.
+            Endpoints settings list.
         """
 
-        return self.__config["devices"]
+        return self.__config["endpoints"]
 
     @property
     def path(self):
@@ -102,18 +104,18 @@ class ApplicationSettings:
         else:
             self.__file_name = file_name
 
-        self.read()
+        self.load()
 
 #endregion
 
 #region Public Methods
 
-    def read(self):
+    def load(self):
         """Read YAML file."""
 
         if self.exists:
             with open(self.__file_name, "rt", encoding="utf-8") as stream:
-                self.__config = yaml.load(stream, Loader=yaml.FullLoader)
+                self.__config = yaml.load(stream, Loader=Loader)
                 stream.close()
 
     def save(self):
@@ -130,13 +132,12 @@ class ApplicationSettings:
         # Clear the config and new.
         self.__config = {}
 
-        # Default debug level.
         if self.__config is not None:
+            # Default debug level.
             if "application" not in self.__config:
                 self.__config["application"] = {"debug_level": 10}
 
-        # Default things board credentials.
-        if self.__config is not None:
+            # Default things board credentials.
             if "broker" not in self.__config:
                 self.__config["broker"] = {
                     "host": "devcloud.dreamtomation.com",
@@ -144,8 +145,7 @@ class ApplicationSettings:
                     "token": "A1_TEST_TOKEN",
                 }
 
-        # Default masters
-        if self.__config is not None:
+            # Default masters
             if "masters" not in self.__config:
                 self.__config["masters"] = [
                         {
@@ -160,8 +160,7 @@ class ApplicationSettings:
                         },
                     ]
 
-        # Default slaves
-        if self.__config is not None:
+            # Default slaves
             if "slaves" not in self.__config:
                 self.__config["slaves"] = [
                         {

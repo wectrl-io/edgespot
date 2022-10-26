@@ -3,19 +3,25 @@
 
 import json
 import random
+import time
 
 from devices.base_device import BaseDevice
-from utils.logger import get_logger
 from utils.timer import Timer
+from utils.logger import get_logger
 
-class SUN2000(BaseDevice):
-    """Huawei SUN2000 device.
-    """
+from hassapi import Hass
+
+class HomeAssistant(BaseDevice):
+    """HomeAssistant"""
 
 #region Attributes
 
     __logger = None
     """Logger
+    """
+
+    __hass = None
+    """Hass instance.
     """
 
     __gpio_state = {\
@@ -24,7 +30,9 @@ class SUN2000(BaseDevice):
         29: False, 31: False, 32: False, 33: False,\
         35: False, 36: False, 37: False, 38: False, 40: False}
 
-    __update_period = 1
+    __update_period = 60
+
+    __states_ids = []
 
 #endregion
 
@@ -38,15 +46,24 @@ class SUN2000(BaseDevice):
         """
 
         super().__init__(options, provider, adapter)
-        self._vendor = "Huawei"
-        self._model = "SUN2000"
+        self._vendor = "nabu_casa"
+        self._model = "hass"
 
         # Set logger.
         self.__logger = get_logger(__name__)
 
-        # Set timer.
+        # Set home assistant.
+        hassurl = self._get_option("hassurl")
+        token = self._get_option("token")
+        self.__hass = Hass(hassurl=hassurl, token=token)
+
+        # Update period of the pooling cycle.
+        self.__update_period = self._get_option("update_period", 1)
         self.__timer = Timer(self.__update_period)
         self.__timer.set_callback(self.__timer_cb)
+
+        # Get states IDs.
+        self.__states_ids = self._get_option("states_ids", [])
 
 #endregion
 
@@ -54,19 +71,22 @@ class SUN2000(BaseDevice):
 
     def __timer_cb(self, timer):
 
+        # Clear the timer.
         timer.clear()
 
-        params = {
-            "value1": random.randint(0, 9),
-            "value2": random.randint(0, 9),
-            "value3": self.__gpio_state[7] * 10}\
-            # Add feedback for visual fun! Only for party purpose.
+        parameters = {}
 
-        # data = self._provider.get_data(params)
+        for entity_id in self.__states_ids:
+            state = self.__hass.get_state(entity_id)
+            # print(entity_id)
+            # print(state)
+            parameters[entity_id] = float(state.state)
 
-        self._adapter.send_telemetry(params)
+        # self.__hass.turn_on("light.bedroom_light")
+        # self.__hass.run_script("good_morning")
 
-        # self.__logger.info("Working process")
+        # Send data to the cloud.
+        self._adapter.send_telemetry(parameters)
 
     def __get_gpio_status(self):
 
@@ -77,7 +97,7 @@ class SUN2000(BaseDevice):
         # Update GPIOs state.
         self.__gpio_state[pin] = status
 
-    def __callback(self, client, userdata, message):
+    def __on_message(self, client, userdata, message):
 
         # Log message.
         self.__logger.info(\
@@ -97,8 +117,19 @@ class SUN2000(BaseDevice):
             client.publish(message.topic.replace('request', 'response'), self.__get_gpio_status(), 1)
             client.publish('v1/devices/me/attributes', self.__get_gpio_status(), 1)
 
-            # TODO: Send data thought the provider to the IO island.
-            self._provider
+            self.__update_do_ro()
+
+    def __update_do_ro(self):
+        states = []
+        for gpio, state in self.__gpio_state.items():
+            states.append(state)
+
+        client = self._provider.communicator
+        unit = self._get_option("modbus_id")
+        client.connect()
+        client.write_coils(0, states, unit=unit)
+        client.close()
+            
 
 #endregion
 
@@ -107,7 +138,7 @@ class SUN2000(BaseDevice):
     def init(self):
 
         self._adapter.connect()
-        self._adapter.subscribe(gpio_state=self.__get_gpio_status, callback=self.__callback)
+        self._adapter.subscribe(gpio_state=self.__get_gpio_status, callback=self.__on_message)
 
     def update(self):
 

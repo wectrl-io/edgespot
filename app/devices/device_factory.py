@@ -5,7 +5,10 @@
 Devices factory class.
 """
 
+from devices.vendors.cwt.mb308v.mb308v import CWTMB308V
+from devices.vendors.dummy.dummy.dummy import Dummy
 from devices.vendors.huawei.sun2000.sun2000 import SUN2000
+from devices.vendors.nabu_casa.hass.hass import HomeAssistant
 
 class DevicesFactory:
     """Devices factory class.
@@ -42,10 +45,20 @@ class DevicesFactory:
         else:
             options = settings["options"]
 
-        if vendor == "huawei" and model == "sun2000":
+        if vendor == "dummy" and model == "dummy":
+            instance = Dummy(options, provider, adapter)
+
+        elif vendor == "huawei" and model == "sun2000":
             instance = SUN2000(options, provider, adapter)
 
+        elif vendor == "cwt" and model == "cwt_mb308v":
+            instance = CWTMB308V(options, provider, adapter)
+
+        elif vendor == "nabu_casa" and model == "hass":
+            instance = HomeAssistant(options, provider, adapter)
+
+
         else:
-            raise Exception(f"Unsupported master model({model}), vendor({vendor})")
+            raise Exception(f"Unsupported device model({model}), vendor({vendor})")
 
         return instance

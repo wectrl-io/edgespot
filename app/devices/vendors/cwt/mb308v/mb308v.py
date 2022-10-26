@@ -3,14 +3,14 @@
 
 import json
 import random
+import time
 
 from devices.base_device import BaseDevice
-from utils.logger import get_logger
 from utils.timer import Timer
+from utils.logger import get_logger
 
-class SUN2000(BaseDevice):
-    """Huawei SUN2000 device.
-    """
+class CWTMB308V(BaseDevice):
+    """CWTMB308V"""
 
 #region Attributes
 
@@ -24,7 +24,7 @@ class SUN2000(BaseDevice):
         29: False, 31: False, 32: False, 33: False,\
         35: False, 36: False, 37: False, 38: False, 40: False}
 
-    __update_period = 1
+    __update_period = 60
 
 #endregion
 
@@ -38,13 +38,14 @@ class SUN2000(BaseDevice):
         """
 
         super().__init__(options, provider, adapter)
-        self._vendor = "Huawei"
-        self._model = "SUN2000"
+        self._vendor = "cwt"
+        self._model = "mb_308v"
 
         # Set logger.
         self.__logger = get_logger(__name__)
 
         # Set timer.
+        self.__update_period = self._get_option("update_period")
         self.__timer = Timer(self.__update_period)
         self.__timer.set_callback(self.__timer_cb)
 
@@ -54,19 +55,51 @@ class SUN2000(BaseDevice):
 
     def __timer_cb(self, timer):
 
+        # Clear the timer.
         timer.clear()
 
-        params = {
-            "value1": random.randint(0, 9),
-            "value2": random.randint(0, 9),
-            "value3": self.__gpio_state[7] * 10}\
-            # Add feedback for visual fun! Only for party purpose.
+        # Get device modbus ID.
+        unit = self._get_option("modbus_id")
 
-        # data = self._provider.get_data(params)
+        # Get communicator.
+        client = self._provider.communicator
 
-        self._adapter.send_telemetry(params)
+        # Connect to the communicator.
+        client.connect()
 
-        # self.__logger.info("Working process")
+        # Create parameters.
+        parameters = {}
+
+        # Read discrete inputs.
+        rr = client.read_coils(0, 12, unit=unit)
+        if not rr.isError():
+            for index in range(0, 12):
+                key = f"RO{index}"
+                parameters[key] = 1 if rr.bits[index] else 0
+
+        # Read discrete inputs.
+        rr = client.read_discrete_inputs(0, 8, unit=unit)
+        if not rr.isError():
+            for index in range(0, 8):
+                key = f"DI{index}"
+                parameters[key] = 1 if rr.bits[index] else 0
+
+        # Read analog inputs.
+        rr = client.read_input_registers(0, 8, unit=unit)
+        if not rr.isError():
+            for index in range(0, 8):
+                key = f"AI{index}"
+                parameters[key] = rr.registers[index]
+
+        # Read analog outputs.
+        rr = client.read_holding_registers(0, 4, unit=unit)
+        if not rr.isError():
+            for index in range(0, 4):
+                key = f"AO{index}"
+                parameters[key] = rr.registers[index]
+
+        # Send data to the cloud.
+        self._adapter.send_telemetry(parameters)
 
     def __get_gpio_status(self):
 
@@ -77,7 +110,7 @@ class SUN2000(BaseDevice):
         # Update GPIOs state.
         self.__gpio_state[pin] = status
 
-    def __callback(self, client, userdata, message):
+    def __on_message(self, client, userdata, message):
 
         # Log message.
         self.__logger.info(\
@@ -97,8 +130,19 @@ class SUN2000(BaseDevice):
             client.publish(message.topic.replace('request', 'response'), self.__get_gpio_status(), 1)
             client.publish('v1/devices/me/attributes', self.__get_gpio_status(), 1)
 
-            # TODO: Send data thought the provider to the IO island.
-            self._provider
+            self.__update_do_ro()
+
+    def __update_do_ro(self):
+        states = []
+        for gpio, state in self.__gpio_state.items():
+            states.append(state)
+
+        client = self._provider.communicator
+        unit = self._get_option("modbus_id")
+        client.connect()
+        client.write_coils(0, states, unit=unit)
+        client.close()
+            
 
 #endregion
 
@@ -107,7 +151,7 @@ class SUN2000(BaseDevice):
     def init(self):
 
         self._adapter.connect()
-        self._adapter.subscribe(gpio_state=self.__get_gpio_status, callback=self.__callback)
+        self._adapter.subscribe(gpio_state=self.__get_gpio_status, callback=self.__on_message)
 
     def update(self):
 

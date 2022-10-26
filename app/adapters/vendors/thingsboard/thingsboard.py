@@ -4,11 +4,12 @@
 import json
 import time
 
+from adapters.base_adapter import BaseAdapter
 from utils.logger import get_logger
 
 import paho.mqtt.client as mqtt
 
-class ThingsBoardMQTTClient(object):
+class ThingsBoardMQTTClient(BaseAdapter):
     """Things Board MQTT client.
     """
 
@@ -38,46 +39,37 @@ class ThingsBoardMQTTClient(object):
     """Communication token.
     """
 
-    __cid = ""
-    """Client ID
+    __cb = None
+    """Event handle.
     """
 
 #endregion
 
 #region Constructor
 
-    def __init__(self, host, port=1883, keep_alive=60, **kwargs):
+    def __init__(self, options):
+        super().__init__(options)
 
-        if host is None:
-            raise Exception(f"Invalid parameter host = {host}")
-        self.__host = host
+        # Create logger.
+        self.__logger = get_logger(__name__)
 
+        # Get host name to the cloud.
+        self.__host = self._get_option("host")
+
+        # Get port to the cloud.
+        port = self._get_option("port")
         if 1 < port > 65535 :
             raise Exception(f"Invalid parameter port = {port}")
         self.__port = port
 
+        # Get keep alive time to the cloud.
+        keep_alive = self._get_option("keep_alive")
         if 1 < keep_alive > 3600 :
             raise Exception(f"Invalid parameter keep_alive = {keep_alive}")
         self.__keep_alive = keep_alive
 
         # Get token data.
-        if "token" in kwargs:
-
-            if kwargs["token"] is None:
-                raise Exception("Invalid token")
-
-            self.__token = kwargs["token"]
-
-        # Get client ID.
-        if "cid" in kwargs:
-
-            if kwargs["cid"] is None:
-                raise Exception("Invalid token")
-
-            self.__cid = kwargs["cid"]
-
-        # Create logger.
-        self.__logger = get_logger(__name__)
+        self.__token = self._get_option("token")
 
         # Create
         self.__mqtt_client = mqtt.Client(client_id="", clean_session=True)
@@ -102,8 +94,8 @@ class ThingsBoardMQTTClient(object):
         # Connect to the broker.
         self.__mqtt_client.connect(host=self.__host, port=self.__port, keepalive=self.__keep_alive)
 
-        # Subscribe to the attributes.
-        self.__mqtt_client.subscribe("v1/devices/me/attributes", 0)
+        # Subscribing to receive RPC requests
+        self.__mqtt_client.subscribe('v1/devices/me/rpc/request/+')
 
     def update(self):
         """Update the MQTT client.
@@ -130,15 +122,28 @@ class ThingsBoardMQTTClient(object):
 
         self.__mqtt_client.disconnect()
 
+    def publish(self, topic, message):
+        """Publish data.
+
+        Args:
+            topic (string): Topic
+            message (Bytes): Message
+
+        Raises:
+            Exception: Invalid MQTT client instance.
+        """
+
+        if self.__mqtt_client is None:
+            raise Exception("Invalid MQTT client instance.")
+
+        self.__mqtt_client.publish(topic, message)
+
     def send_telemetry(self, values, time_stamp=0):
         """Send telemetry data.
 
         Args:
-            parameters_values (_type_): _description_
-            time_stamp (int, optional): _description_. Defaults to 0.
-
-        Returns:
-            _type_: _description_
+            values (dict): Key Values dictionary.
+            time_stamp (int, optional): When this data ocurred. Defaults to 0.
         """
 
         if self.__mqtt_client is None:
@@ -151,9 +156,28 @@ class ThingsBoardMQTTClient(object):
         # Shift to [ms] band.
         time_stamp *= 1000
 
+        # Make it integer.
+        time_stamp = int(time_stamp)
+
+        # Create message.
         values = {'ts' : time_stamp, 'values' : values}
         values = json.dumps(values)
-        self.__mqtt_client.publish("v1/devices/me/telemetry", values) #topic-v1/devices/me/telemetry
+
+        # Send message.
+        # Topic: v1/devices/me/telemetry
+        self.__mqtt_client.publish("v1/devices/me/telemetry", values)
+
+    def subscribe(self, **kwargs):
+        """Subscribe
+        """
+
+        if "callback" in kwargs and kwargs["callback"] is not None:
+            self.__cb = kwargs["callback"]
+
+        if "gpio_state" in kwargs and kwargs["gpio_state"] is not None:
+            gpio_state = kwargs["gpio_state"]
+            values = gpio_state()
+            self.__mqtt_client.publish("v1/devices/me/attributes", values)
 
 #endregion
 
@@ -161,15 +185,15 @@ class ThingsBoardMQTTClient(object):
 
     def __on_publish(self, client, userdata, result):
 
-        # self.__logger.info(\
-        #     f"__on_publish {self.__host} from {client} with {userdata}: result {result}")
+        # self.__logger.debug(\
+        #     f"Publish to {self.__host} from {client} with {userdata}: result {result}")
 
         pass
 
-    def __on_message(self, client, userdata, result):
+    def __on_message(self, client, userdata, message):
 
-        self.__logger.info(\
-            f"__on_message {self.__host} from {client} with {userdata}: result {result}")
+        if self.__cb is not None:
+            self.__cb(client, userdata, message)
 
     def __on_connect(self, client, userdata, flags, rc):
 
@@ -182,42 +206,34 @@ class ThingsBoardMQTTClient(object):
     def __on_subscribe(self, client, userdata, mid, rc):
 
         self.__logger.info(\
-            f"__on_subscribe {self.__host} from {client} with {userdata}: rc {rc}")
+            f"Subscribe to {self.__host}; rc {rc}")
 
     def __on_disconnect(self, client, userdata, rc):
 
         self.__logger.info(\
-            f"__on_disconnect {self.__host} @ {client} with {userdata}: rc {rc}")
+            f"Disconnect {self.__host}; rc {rc}")
 
 #endregion
 
 #region Static Methods
 
     @staticmethod
-    def get_instance(settings):
+    def get_instance(options):
         """Get instance of the Thinks Board MQTT Client.
 
         Args:
             settings (dict): Settings dictionary.
         """
 
-        if "host" not in settings:
+        if "host" not in options:
             raise Exception("No host provided.")
 
-        if "port" not in settings:
+        if "port" not in options:
             raise Exception("No port provided.")
 
-        if "token" not in settings:
+        if "token" not in options:
             raise Exception("No token provided.")
 
-        host = settings["host"]
-        port = settings["port"]
-        token = settings["token"]
-
-        # client.connect()
-        # client.update()
-        # client.send_telemetry({"value": random.randint(0, 9)})
-
-        return ThingsBoardMQTTClient(host, port, token=token)
+        return ThingsBoardMQTTClient(options)
 
 #endregion
