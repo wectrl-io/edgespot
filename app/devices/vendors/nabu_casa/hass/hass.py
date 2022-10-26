@@ -5,6 +5,7 @@ import json
 import random
 import time
 
+from converter import get_value_from_entity
 from devices.base_device import BaseDevice
 from utils.timer import Timer
 from utils.logger import get_logger
@@ -32,7 +33,7 @@ class HomeAssistant(BaseDevice):
 
     __update_period = 60
 
-    __states_ids = []
+    __entitys_ids = []
 
 #endregion
 
@@ -63,7 +64,7 @@ class HomeAssistant(BaseDevice):
         self.__timer.set_callback(self.__timer_cb)
 
         # Get states IDs.
-        self.__states_ids = self._get_option("states_ids", [])
+        self.__entitys_ids = self._get_option("entitys_ids", [])
 
 #endregion
 
@@ -74,19 +75,22 @@ class HomeAssistant(BaseDevice):
         # Clear the timer.
         timer.clear()
 
-        parameters = {}
+        # Values of the parameters.
+        values = {}
 
-        for entity_id in self.__states_ids:
+        # Colect values from the Hass.
+        for entity_id in self.__entitys_ids:
+            # TODO: Separate service calls and other functions.
             state = self.__hass.get_state(entity_id)
-            # print(entity_id)
-            # print(state)
-            parameters[entity_id] = float(state.state)
+            if state is not None:
+                values[entity_id] = get_value_from_entity(state)
 
         # self.__hass.turn_on("light.bedroom_light")
         # self.__hass.run_script("good_morning")
 
         # Send data to the cloud.
-        self._adapter.send_telemetry(parameters)
+        if values != {}:
+            self._adapter.send_telemetry(values)
 
     def __get_gpio_status(self):
 
@@ -129,7 +133,6 @@ class HomeAssistant(BaseDevice):
         client.connect()
         client.write_coils(0, states, unit=unit)
         client.close()
-            
 
 #endregion
 
