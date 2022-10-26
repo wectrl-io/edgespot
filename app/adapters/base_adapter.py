@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
+from exceptions.exceptions import InvalidOption
+
+
 class BaseAdapter(object):
 
 #region Attributes
@@ -22,7 +25,7 @@ class BaseAdapter(object):
     def _get_option(self, name):
 
         if name not in self._options:
-            raise Exception(f"Invalid option: {name}")
+            raise InvalidOption(f"Invalid option: {name}")
 
         return self._options[name]
 

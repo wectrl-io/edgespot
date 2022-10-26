@@ -6,6 +6,8 @@ Devices factory class.
 """
 
 from adapters.vendors.thingsboard.thingsboard import ThingsBoardMQTTClient
+from exceptions.exceptions import UnsuportedAdapter
+from exceptions.exceptions import MissingParameter
 
 class AdaptersFactory:
     """Adapters factory class.
@@ -26,19 +28,19 @@ class AdaptersFactory:
 
         vendor = None
         if "vendor" not in settings:
-            raise Exception("Invalid vendor")
+            raise MissingParameter(f"Vendor")
         else:
             vendor = settings["vendor"]
 
         version = None
         if "version" not in settings:
-            raise Exception("Invalid model")
+            raise MissingParameter("Version")
         else:
             version = settings["version"]
 
         options = None
         if "options" not in settings:
-            raise Exception("Invalid options")
+            raise MissingParameter("Options")
         else:
             options = settings["options"]
 
@@ -46,6 +48,6 @@ class AdaptersFactory:
             instance = ThingsBoardMQTTClient.get_instance(options)
 
         else:
-            raise Exception(f"Unsupported adapter version({version}), vendor({vendor})")
+            raise UnsuportedAdapter(f"Unsupported adapter version({version}), vendor({vendor})")
 
         return instance

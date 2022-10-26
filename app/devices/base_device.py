@@ -5,6 +5,8 @@
 Base device class.
 """
 
+from exceptions.exceptions import InvalidOption
+
 class BaseDevice(object):
     """Base device class.
     """
@@ -53,7 +55,7 @@ class BaseDevice(object):
     def __init__(self, options, provider, adapter):
 
         if options is None:
-            raise Exception("Invalid options")
+            raise InvalidOption("Options is equal to None")
 
         self._options = options
         self._provider = provider
@@ -62,7 +64,7 @@ class BaseDevice(object):
     def _get_option(self, name, default=None):
 
         if name not in self._options and default is None:
-            raise Exception(f"Invalid option: {name}")
+            raise InvalidOption(f"Invalid option: {name}")
 
         if name not in self._options and default is not None:
             return default

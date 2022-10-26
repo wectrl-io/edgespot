@@ -5,6 +5,7 @@ import json
 import time
 
 from adapters.base_adapter import BaseAdapter
+from exceptions.exceptions import InvalidOption
 from utils.logger import get_logger
 
 import paho.mqtt.client as mqtt
@@ -59,13 +60,13 @@ class ThingsBoardMQTTClient(BaseAdapter):
         # Get port to the cloud.
         port = self._get_option("port")
         if 1 < port > 65535 :
-            raise Exception(f"Invalid parameter port = {port}")
+            raise InvalidOption(f"port = {port}")
         self.__port = port
 
         # Get keep alive time to the cloud.
         keep_alive = self._get_option("keep_alive")
         if 1 < keep_alive > 3600 :
-            raise Exception(f"Invalid parameter keep_alive = {keep_alive}")
+            raise InvalidOption(f"keep_alive = {keep_alive}")
         self.__keep_alive = keep_alive
 
         # Get token data.
@@ -226,13 +227,13 @@ class ThingsBoardMQTTClient(BaseAdapter):
         """
 
         if "host" not in options:
-            raise Exception("No host provided.")
+            raise InvalidOption("No host provided.")
 
         if "port" not in options:
-            raise Exception("No port provided.")
+            raise InvalidOption("No port provided.")
 
         if "token" not in options:
-            raise Exception("No token provided.")
+            raise InvalidOption("No token provided.")
 
         return ThingsBoardMQTTClient(options)
 

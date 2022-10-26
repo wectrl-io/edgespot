@@ -5,6 +5,8 @@
 Base provider class.
 """
 
+from exceptions.exceptions import InvalidOption
+
 class BaseProvider(object):
     """Base provider class.
     """
@@ -43,7 +45,7 @@ class BaseProvider(object):
     def __init__(self, options):
 
         if options is None:
-            raise Exception("Invalid options")
+            raise InvalidOption("Options equal to None")
 
         self._options = options
 
@@ -51,7 +53,7 @@ class BaseProvider(object):
     def _get_option(self, name, default=None):
 
         if name not in self._options and default is None:
-            raise Exception(f"Invalid option: {name}")
+            raise InvalidOption(f"Invalid option: {name}")
 
         if name not in self._options and default is not None:
             return default

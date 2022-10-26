@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
+from exceptions.exceptions import UnsuportedFramer
 from providers.vendors.base_provider import BaseProvider
 
 from pymodbus.client.sync import ModbusTcpClient as ModbusClient
@@ -65,12 +66,16 @@ class NB114(BaseProvider):
 
         if framer_type == "rtu":
             framer = ModbusRtuFramer
+
         elif framer_type == "bin":
             framer = ModbusBinaryFramer
+
         elif framer_type == "ascii":
             framer = ModbusAsciiFramer
+
         else:
-            raise Exception(f"Unsupported framer type({framer_type})")
+            raise UnsuportedFramer(f"{framer_type}")
+
         return framer
 
 #endregion

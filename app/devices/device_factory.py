@@ -5,6 +5,8 @@
 Devices factory class.
 """
 
+from exceptions.exceptions import UnsuportedAdapter, UnsuportedDevice
+from exceptions.exceptions import MissingParameter
 from devices.vendors.cwt.mb308v.mb308v import CWTMB308V
 from devices.vendors.dummy.dummy.dummy import Dummy
 from devices.vendors.huawei.sun2000.sun2000 import SUN2000
@@ -29,19 +31,19 @@ class DevicesFactory:
 
         vendor = None
         if "vendor" not in settings:
-            raise Exception("Invalid vendor")
+            raise MissingParameter("Vendor")
         else:
             vendor = settings["vendor"]
 
         model = None
         if "model" not in settings:
-            raise Exception("Invalid model")
+            raise MissingParameter("Model")
         else:
             model = settings["model"]
 
         options = None
         if "options" not in settings:
-            raise Exception("Invalid options")
+            raise MissingParameter("Options")
         else:
             options = settings["options"]
 
@@ -59,6 +61,6 @@ class DevicesFactory:
 
 
         else:
-            raise Exception(f"Unsupported device model({model}), vendor({vendor})")
+            raise UnsuportedDevice(f"Unsupported device model({model}), vendor({vendor})")
 
         return instance
