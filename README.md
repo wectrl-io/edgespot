@@ -24,11 +24,6 @@ activate
 python -m pip install --upgrade pip
 ```
 
- - Upgrade virtual environment
-```sh
-python -m pip install --upgrade pip
-```
-
  - Install requirement for virtual environment
 ```sh
 python -m pip install -r requirements.txt
