@@ -24,7 +24,13 @@ class HomeAssistant(BaseDevice):
     """Hass instance.
     """
 
-    __update_period = 1
+    __gpio_state = {\
+        7: False, 11: False, 12: False, 13: False,\
+        15: False, 16: False, 18: False, 22: False,\
+        29: False, 31: False, 32: False, 33: False,\
+        35: False, 36: False, 37: False, 38: False, 40: False}
+
+    __update_period = 60
 
     __states_ids = []
 
@@ -68,19 +74,19 @@ class HomeAssistant(BaseDevice):
         # Clear the timer.
         timer.clear()
 
-        parameters = []
+        parameters = {}
 
         for entity_id in self.__states_ids:
             state = self.__hass.get_state(entity_id)
-            print(entity_id)
-            print(state)
-            parameters[entity_id] = state
+            # print(entity_id)
+            # print(state)
+            parameters[entity_id] = float(state.state)
 
         # self.__hass.turn_on("light.bedroom_light")
         # self.__hass.run_script("good_morning")
 
         # Send data to the cloud.
-        # self._adapter.send_telemetry(parameters)
+        self._adapter.send_telemetry(parameters)
 
     def __get_gpio_status(self):
 
