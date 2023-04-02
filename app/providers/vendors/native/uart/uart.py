@@ -3,7 +3,7 @@
 
 from providers.vendors.base_provider import BaseProvider
 
-from pymodbus.client.sync import ModbusSerialClient as ModbusClient
+from pymodbus.client.serial import ModbusSerialClient as ModbusClient
 # from pymodbus.client.sync import ModbusTcpClient as ModbusClient
 
 # from pymodbus.transaction import ModbusSocketFramer as ModbusFramer
