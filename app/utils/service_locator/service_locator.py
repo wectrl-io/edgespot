@@ -9,6 +9,8 @@ from exceptions.not_existing_service import NotExistingService
 
 
 class ServiceLocator():
+    """Service locator implementation.
+    """
 
 #region Attributes
 
@@ -64,7 +66,7 @@ class ServiceLocator():
 
         Raises:
             InvalidServiceName: Service name should be unique and not empty string.
-            NotExistingService: Service does not exits.
+            NotExistingService: Service does not exists.
 
         Returns:
             object: Instance of the service.
@@ -74,7 +76,7 @@ class ServiceLocator():
             raise InvalidServiceName("Service name should be unique and not empty string.")
 
         if name not in self.__services:
-            raise NotExistingService("Service does not exits.")
+            raise NotExistingService("Service does not exists.")
 
         return self.__services[name]
 
