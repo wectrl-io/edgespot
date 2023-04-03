@@ -59,15 +59,14 @@ class ApplicationSettings:
         return value
 
     @property
-    def endpoints(self):
+    def config(self):
         """Endpoints settings.
-        Returns
-        -------
-        list
-            Endpoints settings list.
+
+        Returns:
+            dict: Application configuration.
         """
 
-        return self.__config["endpoints"]
+        return self.__config
 
     @property
     def path(self):
