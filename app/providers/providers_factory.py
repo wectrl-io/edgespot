@@ -9,6 +9,8 @@ from providers.vendors.dummy.dummy.dummy import Dummy
 from providers.vendors.ebyte.nb114.nb114 import NB114
 from providers.vendors.native.uart.uart import NativeUart
 
+from exceptions.unsupported_provider import UnsupportedProvider
+
 class ProvidersFactory(object):
     """Providers factory.
     """
@@ -28,19 +30,19 @@ class ProvidersFactory(object):
 
         vendor = None
         if "vendor" not in settings:
-            raise Exception("Invalid vendor")
+            raise ValueError("Invalid vendor")
         else:
             vendor = settings["vendor"]
 
         model = None
         if "model" not in settings:
-            raise Exception("Invalid model")
+            raise ValueError("Invalid model")
         else:
             model = settings["model"]
 
         options = None
         if "options" not in settings:
-            raise Exception("Invalid options")
+            raise ValueError("Invalid options")
         else:
             options = settings["options"]
 
@@ -54,6 +56,6 @@ class ProvidersFactory(object):
             instance = NativeUart(options)
 
         else:
-            raise Exception(f"Unsupported provider model({model}), vendor({vendor})")
+            raise UnsupportedProvider(f"Unsupported provider model({model}), vendor({vendor})")
 
         return instance
