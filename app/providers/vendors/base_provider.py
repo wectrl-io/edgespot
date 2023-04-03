@@ -43,7 +43,7 @@ class BaseProvider(object):
     def __init__(self, options):
 
         if options is None:
-            raise Exception("Invalid options")
+            raise ValueError("Invalid options")
 
         self._options = options
 
@@ -51,7 +51,7 @@ class BaseProvider(object):
     def _get_option(self, name, default=None):
 
         if name not in self._options and default is None:
-            raise Exception(f"Invalid option: {name}")
+            raise ValueError(f"Invalid option: {name}")
 
         if name not in self._options and default is not None:
             return default
