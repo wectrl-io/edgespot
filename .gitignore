@@ -193,4 +193,8 @@ cython_debug/
 *.ini
 *.conf
 
+# Ignore logs
+*/logs
+*.log
+
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,python
