@@ -10,6 +10,8 @@ from utils.logger import get_logger
 
 from utils.settings import ApplicationSettings
 
+from utils.service_locator.service_locator import ServiceLocator
+
 class Sunspot(object):
     """Sun spot application logic.
     """
@@ -20,13 +22,18 @@ class Sunspot(object):
     """Logger
     """
 
-    __devices = None
-    """List of sub devices.
+    __service_locator = None
+    """Service locator.
     """
 
     __settings = None
     """Application settings.
     """
+
+    __devices = None
+    """List of sub devices.
+    """
+
 
 #endregion
 
@@ -39,15 +46,32 @@ class Sunspot(object):
         # Set logger.
         self.__logger = get_logger(__name__)
 
+        # Get instance of the service locator.
+        self.__service_locator = ServiceLocator.get_instance()
+
         # Get settings.
         self.__settings = ApplicationSettings.get_instance()
 
+        # Create and add adapters.
+        adapters = self.__settings.config["adapters"]
+        for adapter in adapters:
+            adapter_instance = AdaptersFactory.create(adapter)
+            self.__service_locator.add(adapter["name"], adapter_instance)
+
+        # Create and add providers.
+        providers = self.__settings.config["providers"]
+        for provider in providers:
+            provider_instance = ProvidersFactory.create(provider)
+            self.__service_locator.add(provider["name"], provider_instance)
+
+        # Create and add devices.
         self.__devices = Devices()
-        for ep_settings in self.__settings.endpoints:
-            adapter = AdaptersFactory.create(ep_settings["adapter"])
-            provider = ProvidersFactory.create(ep_settings["provider"])
-            device = DevicesFactory.create(ep_settings["device"], provider, adapter)
-            self.__devices.append(device)
+        devices = self.__settings.config["devices"]
+        for device in devices:
+            adapter = self.__service_locator.get(device["adapter"])
+            provider = self.__service_locator.get(device["provider"])
+            device_instance = DevicesFactory.create(device, provider, adapter)
+            self.__devices.append(device_instance)
 
 #endregion
 
