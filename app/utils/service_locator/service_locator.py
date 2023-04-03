@@ -20,6 +20,19 @@ class ServiceLocator():
 
 #endregion
 
+#region Properties
+
+    @property
+    def names(self):
+        names = []
+
+        for service in self.__services:
+            names.append(service)
+
+        return names
+
+#endregion
+
 #region Constructor
 
     def __init__(self):
@@ -52,8 +65,8 @@ class ServiceLocator():
         if service is None:
             raise InvalidServiceInstance("Service should not be instance of None.")
 
-        for _, value in self.__services:
-            if value == service:
+        for service_name in self.__services:
+            if self.__services[service_name] == service:
                 raise ExistingServiceInstance("Service instance already exists.")
 
         self.__services[name] = service
