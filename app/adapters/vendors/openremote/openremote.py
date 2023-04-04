@@ -35,8 +35,12 @@ class OpenRemoteMQTTClient(BaseAdapter):
     """Keep alive time.
     """
 
-    __token = ""
+    __client_id = ""
     """Communication token.
+    """
+
+    __realm = ""
+    """Realm
     """
 
     __cb = None
@@ -69,16 +73,70 @@ class OpenRemoteMQTTClient(BaseAdapter):
         self.__keep_alive = keep_alive
 
         # Get token data.
-        self.__token = self._get_option("token")
+        client_id = self._get_option("client_id")
+        if client_id == "":
+            raise ValueError(f"Invalid parameter client_id = {client_id}")
+        self.__client_id = keep_alive
 
         # Create
-        self.__mqtt_client = mqtt.Client(client_id="", clean_session=True)
+        self.__mqtt_client = mqtt.Client(client_id=self.__client_id, clean_session=True)
         self.__mqtt_client.on_publish = self.__on_publish
         self.__mqtt_client.on_message = self.__on_message
         self.__mqtt_client.on_connect = self.__on_connect
         self.__mqtt_client.on_subscribe = self.__on_subscribe
         self.__mqtt_client.on_disconnect = self.__on_disconnect
-        self.__mqtt_client.username_pw_set(self.__token)
+        self.__mqtt_client.username_pw_set(self.__client_id)
+
+#endregion
+
+#region Public App Methods
+
+    def pub_attribute(self, attribute_name: str, asset_id: str, value):
+        """_summary_
+
+        Args:
+            attribute_name (str): _description_
+            asset_id (str): _description_
+            value (_type_): _description_
+        """
+
+        if self.__mqtt_client is None:
+            raise ValueError("Invalid MQTT client instance.")
+
+        # Create topic to write to attribute value.
+        topic = f"{self.__realm}/{self.__client_id}/writeattributevalue/{attribute_name}/{asset_id}"
+
+        # Send message.
+        self.__mqtt_client.publish(topic, value)
+
+    def send_telemetry(self, values, time_stamp=0):
+        """Send telemetry data.
+
+        Args:
+            values (dict): Key Values dictionary.
+            time_stamp (int, optional): When this data ocurred. Defaults to 0.
+        """
+
+        if self.__mqtt_client is None:
+            raise ValueError("Invalid MQTT client instance.")
+
+        # Constancy check the timestamp.
+        if time_stamp <= 0:
+            time_stamp = time.time()
+
+        # Shift to [ms] band.
+        time_stamp *= 1000
+
+        # Make it integer.
+        time_stamp = int(time_stamp)
+
+        # Create message.
+        values = {'ts' : time_stamp, 'values' : values}
+        values = json.dumps(values)
+
+        # Send message.
+        # Topic: v1/devices/me/telemetry
+        self.__mqtt_client.publish("v1/devices/me/telemetry", values)
 
 #endregion
 
@@ -138,35 +196,6 @@ class OpenRemoteMQTTClient(BaseAdapter):
 
         self.__mqtt_client.publish(topic, message)
 
-    def send_telemetry(self, values, time_stamp=0):
-        """Send telemetry data.
-
-        Args:
-            values (dict): Key Values dictionary.
-            time_stamp (int, optional): When this data ocurred. Defaults to 0.
-        """
-
-        if self.__mqtt_client is None:
-            raise ValueError("Invalid MQTT client instance.")
-
-        # Constancy check the timestamp.
-        if time_stamp <= 0:
-            time_stamp = time.time()
-
-        # Shift to [ms] band.
-        time_stamp *= 1000
-
-        # Make it integer.
-        time_stamp = int(time_stamp)
-
-        # Create message.
-        values = {'ts' : time_stamp, 'values' : values}
-        values = json.dumps(values)
-
-        # Send message.
-        # Topic: v1/devices/me/telemetry
-        self.__mqtt_client.publish("v1/devices/me/telemetry", values)
-
     def subscribe(self, **kwargs):
         """Subscribe
         """
@@ -185,10 +214,8 @@ class OpenRemoteMQTTClient(BaseAdapter):
 
     def __on_publish(self, client, userdata, result):
 
-        # self.__logger.debug(\
-        #     f"Publish to {self.__host} from {client} with {userdata}: result {result}")
-
-        pass
+        self.__logger.debug(\
+            f"Publish to {self.__host} from {client} with {userdata}: result {result}")
 
     def __on_message(self, client, userdata, message):
 
@@ -197,7 +224,7 @@ class OpenRemoteMQTTClient(BaseAdapter):
 
     def __on_connect(self, client, userdata, flags, rc):
 
-        if rc==0:
+        if rc == 0:
             self.__logger.info(f"Connected OK Returned code {rc}")
 
         else:
