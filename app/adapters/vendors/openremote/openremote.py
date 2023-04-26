@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-import json
-import time
-
 from adapters.base_adapter import BaseAdapter
 from utils.logger import get_logger
 
 import paho.mqtt.client as mqtt
+
+
 
 class OpenRemoteMQTTClient(BaseAdapter):
     """Open Remote MQTT client.
@@ -39,12 +38,8 @@ class OpenRemoteMQTTClient(BaseAdapter):
     """Communication token.
     """
 
-    __realm = ""
-    """Realm
-    """
-
-    __cb = None
-    """Event handle.
+    __cb_dispatcher = {}
+    """Callback dispatcher.
     """
 
 #endregion
@@ -76,9 +71,9 @@ class OpenRemoteMQTTClient(BaseAdapter):
         client_id = self._get_option("client_id")
         if client_id == "":
             raise ValueError(f"Invalid parameter client_id = {client_id}")
-        self.__client_id = keep_alive
+        self.__client_id = client_id
 
-        # Create
+        # Create the MQTT client.
         self.__mqtt_client = mqtt.Client(client_id=self.__client_id, clean_session=True)
         self.__mqtt_client.on_publish = self.__on_publish
         self.__mqtt_client.on_message = self.__on_message
@@ -89,58 +84,116 @@ class OpenRemoteMQTTClient(BaseAdapter):
 
 #endregion
 
-#region Public App Methods
+#region Private Methods (API)
 
-    def pub_attribute(self, attribute_name: str, asset_id: str, value):
-        """_summary_
+    def __attach_cb_to_topic(self, topic, callback):
+
+        if self.__cb_dispatcher is not []:
+            self.__cb_dispatcher[topic] = []
+
+        if topic in self.__cb_dispatcher:
+            if self.__cb_dispatcher[topic] is []:
+                self.__cb_dispatcher[topic].append(callback)
+
+    def __dispatch_message(self, client, userdata, message):
+
+        if message is None:
+            return
+
+        if message.topic is None:
+            return
+
+        for topic in self.__cb_dispatcher:
+            if topic == message.topic:
+                if callable(self.__cb_dispatcher[message.topic]):
+                    self.__cb_dispatcher[message.topic](client, userdata, message)
+
+#endregion
+
+#region Private Methods (MQTT)
+
+    def __on_publish(self, client, userdata, result):
+
+        self.__logger.debug(\
+            f"Publish to {self.__host} from {client} with {userdata}: result {result}")
+
+    def __on_message(self, client, userdata, message):
+
+        self.__dispatch_message(client, userdata, message)
+
+    def __on_connect(self, client, userdata, flags, rc):
+
+        if rc == 0:
+            self.__logger.info(f"Connected OK Returned code {rc}")
+
+        else:
+            self.__logger.error(f"Bad connection Returned code {rc}")
+
+    def __on_subscribe(self, client, userdata, mid, rc):
+
+        self.__logger.info(\
+            f"Subscribe to {self.__host}; rc {rc}")
+
+    def __on_disconnect(self, client, userdata, rc):
+
+        self.__logger.info(\
+            f"Disconnect {self.__host}; rc {rc}")
+
+#endregion
+
+#region Public Methods (API)
+
+    def pub_attribute(self, realm_name: str, attribute_name: str, asset_id: str, value):
+        """Publish to attribute.
 
         Args:
-            attribute_name (str): _description_
-            asset_id (str): _description_
-            value (_type_): _description_
+            realm_name (str): Realm name.
+            attribute_name (str): Attribute name.
+            asset_id (str): Asset ID.
+            callback (function): Callback function
+
+        Raises:
+            ValueError: Invalid MQTT client.
         """
 
         if self.__mqtt_client is None:
             raise ValueError("Invalid MQTT client instance.")
 
         # Create topic to write to attribute value.
-        topic = f"{self.__realm}/{self.__client_id}/writeattributevalue/{attribute_name}/{asset_id}"
+        #          master     /client123         /writeattributevalue/writeAttribute  /6xIa9MkpZuR7slaUGB6OTZ
+        topic = f"{realm_name}/{self.__client_id}/writeattributevalue/{attribute_name}/{asset_id}"
 
         # Send message.
         self.__mqtt_client.publish(topic, value)
 
-    def send_telemetry(self, values, time_stamp=0):
-        """Send telemetry data.
+    def sub_attribute(self, realm_name: str, attribute_name: str, asset_id: str, callback):
+        """Subscribe to attribute.
 
         Args:
-            values (dict): Key Values dictionary.
-            time_stamp (int, optional): When this data ocurred. Defaults to 0.
+            realm_name (str): Realm name.
+            attribute_name (str): Attribute name.
+            asset_id (str): Asset ID.
+            callback (function): Callback function
+
+        Raises:
+            ValueError: Invalid MQTT client.
         """
+
+        # Create topic to write to attribute value.
+        #          master     /client123         /attribute/subscribeAttribute/6xIa9MkpZuR7slaUGB6OTZ
+        topic = f"{realm_name}/{self.__client_id}/attribute/{attribute_name}/{asset_id}"
+
+        self.__attach_cb_to_topic(topic, callback)
 
         if self.__mqtt_client is None:
             raise ValueError("Invalid MQTT client instance.")
 
-        # Constancy check the timestamp.
-        if time_stamp <= 0:
-            time_stamp = time.time()
-
-        # Shift to [ms] band.
-        time_stamp *= 1000
-
-        # Make it integer.
-        time_stamp = int(time_stamp)
-
-        # Create message.
-        values = {'ts' : time_stamp, 'values' : values}
-        values = json.dumps(values)
-
-        # Send message.
-        # Topic: v1/devices/me/telemetry
-        self.__mqtt_client.publish("v1/devices/me/telemetry", values)
+        # Subscribing to receive RPC requests.
+        self.__mqtt_client.subscribe(topic)
 
 #endregion
 
-#region Public Methods
+#region Public Methods (Base Class Implementation)
 
     def connect(self):
         """Connect to MQTT broker.
@@ -151,9 +204,6 @@ class OpenRemoteMQTTClient(BaseAdapter):
 
         # Connect to the broker.
         self.__mqtt_client.connect(host=self.__host, port=self.__port, keepalive=self.__keep_alive)
-
-        # Subscribing to receive RPC requests
-        self.__mqtt_client.subscribe('v1/devices/me/rpc/request/+')
 
     def update(self):
         """Update the MQTT client.
@@ -196,50 +246,6 @@ class OpenRemoteMQTTClient(BaseAdapter):
 
         self.__mqtt_client.publish(topic, message)
 
-    def subscribe(self, **kwargs):
-        """Subscribe
-        """
-
-        if "callback" in kwargs and kwargs["callback"] is not None:
-            self.__cb = kwargs["callback"]
-
-        if "gpio_state" in kwargs and kwargs["gpio_state"] is not None:
-            gpio_state = kwargs["gpio_state"]
-            values = gpio_state()
-            self.__mqtt_client.publish("v1/devices/me/attributes", values)
-
-#endregion
-
-#region Private Methods
-
-    def __on_publish(self, client, userdata, result):
-
-        self.__logger.debug(\
-            f"Publish to {self.__host} from {client} with {userdata}: result {result}")
-
-    def __on_message(self, client, userdata, message):
-
-        if self.__cb is not None:
-            self.__cb(client, userdata, message)
-
-    def __on_connect(self, client, userdata, flags, rc):
-
-        if rc == 0:
-            self.__logger.info(f"Connected OK Returned code {rc}")
-
-        else:
-            self.__logger.error(f"Bad connection Returned code {rc}")
-
-    def __on_subscribe(self, client, userdata, mid, rc):
-
-        self.__logger.info(\
-            f"Subscribe to {self.__host}; rc {rc}")
-
-    def __on_disconnect(self, client, userdata, rc):
-
-        self.__logger.info(\
-            f"Disconnect {self.__host}; rc {rc}")
-
 #endregion
 
 #region Static Methods
@@ -258,8 +264,8 @@ class OpenRemoteMQTTClient(BaseAdapter):
         if "port" not in options:
             raise ValueError("No port provided.")
 
-        if "token" not in options:
-            raise ValueError("No token provided.")
+        if "client_id" not in options:
+            raise ValueError("No client ID provided.")
 
         return OpenRemoteMQTTClient(options)
 
