@@ -79,6 +79,8 @@ class Dummy(BaseDevice):
 
         data = self._provider.get_data(params)
 
+        self._adapter.pub_attribute("realm_name", "attribute_name", "asset_id", "Hello, world!")
+
         # self._adapter.send_telemetry(data)
 
         # self.__logger.info("Working process")
