@@ -9,6 +9,8 @@ from devices.vendors.cwt.mb308v.mb308v import CWTMB308V
 from devices.vendors.dummy.dummy.dummy import Dummy
 from devices.vendors.huawei.sun2000.sun2000 import SUN2000
 from devices.vendors.nabu_casa.hass.hass import HomeAssistant
+from devices.vendors.shelly.gen_1.shelly_1 import Shelly1
+from devices.vendors.shelly.gen_1.shelly_1l import Shelly1L
 
 class DevicesFactory:
     """Devices factory class.
@@ -57,6 +59,11 @@ class DevicesFactory:
         elif vendor == "nabu_casa" and model == "hass":
             instance = HomeAssistant(options, provider, adapter)
 
+        elif vendor == "alterco" and model == "shelly1":
+            instance = Shelly1(options, provider, adapter)
+
+        elif vendor == "alterco" and model == "shelly1l":
+            instance = Shelly1L(options, provider, adapter)
 
         else:
             raise Exception(f"Unsupported device model({model}), vendor({vendor})")
