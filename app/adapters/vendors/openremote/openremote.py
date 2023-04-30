@@ -6,8 +6,6 @@ from utils.logger import get_logger
 
 import paho.mqtt.client as mqtt
 
-
-
 class OpenRemoteMQTTClient(BaseAdapter):
     """Open Remote MQTT client.
     """
@@ -41,6 +39,24 @@ class OpenRemoteMQTTClient(BaseAdapter):
     __cb_dispatcher = {}
     """Callback dispatcher.
     """
+
+    __is_connected_flag = False
+    """Is connected flag.
+    """    
+
+#endregion
+
+#region Properties
+
+    @property
+    def is_connected(self):
+        """Is connected flag.
+
+        Returns:
+            bool: Is connected flag.
+        """
+
+        return self.__is_connected_flag
 
 #endregion
 
@@ -125,9 +141,11 @@ class OpenRemoteMQTTClient(BaseAdapter):
 
         if rc == 0:
             self.__logger.info(f"Connected OK Returned code {rc}")
+            self.__is_connected_flag = True
 
         else:
             self.__logger.error(f"Bad connection Returned code {rc}")
+            self.__is_connected_flag = False
 
     def __on_subscribe(self, client, userdata, mid, rc):
 
@@ -138,6 +156,7 @@ class OpenRemoteMQTTClient(BaseAdapter):
 
         self.__logger.info(\
             f"Disconnect from {self.__host}, with return code {rc}")
+        self.__is_connected_flag = False
 
 #endregion
 
@@ -158,6 +177,9 @@ class OpenRemoteMQTTClient(BaseAdapter):
 
         if self.__mqtt_client is None:
             raise ValueError("Invalid MQTT client instance.")
+
+        if not self.is_connected:
+            return
 
         # Create topic to write to attribute value.
         #          master     /client123         /writeattributevalue/writeAttribute  /6xIa9MkpZuR7slaUGB6OTZ
@@ -188,6 +210,9 @@ class OpenRemoteMQTTClient(BaseAdapter):
         if self.__mqtt_client is None:
             raise ValueError("Invalid MQTT client instance.")
 
+        if not self.is_connected:
+            return
+
         # Subscribing to receive RPC requests.
         self.__mqtt_client.subscribe(topic)
 
@@ -201,6 +226,9 @@ class OpenRemoteMQTTClient(BaseAdapter):
 
         if self.__mqtt_client is None:
             raise ValueError("Invalid MQTT client instance.")
+
+        if self.is_connected:
+            return
 
         # Connect to the broker.
         self.__mqtt_client.connect(host=self.__host, port=self.__port, keepalive=self.__keep_alive)
@@ -216,6 +244,9 @@ class OpenRemoteMQTTClient(BaseAdapter):
         if self.__mqtt_client is None:
             raise ValueError("Invalid MQTT client instance.")
 
+        if not self.is_connected:
+            return
+
         # Continue monitoring the incoming messages for subscribed topic.
         self.__mqtt_client.loop()
 
@@ -228,6 +259,9 @@ class OpenRemoteMQTTClient(BaseAdapter):
 
         if self.__mqtt_client is None:
             raise ValueError("Invalid MQTT client instance.")
+
+        if not self.is_connected:
+            return
 
         self.__mqtt_client.disconnect()
 
@@ -244,6 +278,9 @@ class OpenRemoteMQTTClient(BaseAdapter):
 
         if self.__mqtt_client is None:
             raise ValueError("Invalid MQTT client instance.")
+
+        if not self.is_connected:
+            return
 
         self.__mqtt_client.publish(topic, message)
 
