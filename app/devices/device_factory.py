@@ -71,6 +71,6 @@ class DevicesFactory:
             instance = Shelly1L(options, provider, adapter)
 
         else:
-            raise Exception(f"Unsupported device model({model}), vendor({vendor})")
+            raise NotImplementedError(f"Unsupported device model({model}), vendor({vendor})")
 
         return instance
