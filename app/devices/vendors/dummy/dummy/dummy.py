@@ -4,8 +4,9 @@
 import random
 import json
 
-from utils.timer import Timer
 from utils.logger import get_logger
+from utils.timer import Timer
+
 from devices.base_device import BaseDevice
 
 class Dummy(BaseDevice):
@@ -50,23 +51,6 @@ class Dummy(BaseDevice):
 
 #endregion
 
-#region Public Methods
-
-    def init(self):
-
-        self._adapter.connect()
-
-    def update(self):
-
-        self.__timer.update()
-        self._adapter.update()
-
-    def shutdown(self):
-
-        self._adapter.disconnect()
-
-#endregion
-
 #region Private Methods
 
     def __get_params(self):
@@ -87,5 +71,22 @@ class Dummy(BaseDevice):
         # self._adapter.send_telemetry(data)
 
         # self.__logger.info("Working process")
+
+#endregion
+
+#region Public Methods
+
+    def init(self):
+
+        self._adapter.connect()
+
+    def update(self):
+
+        self.__timer.update()
+        self._adapter.update()
+
+    def shutdown(self):
+
+        self._adapter.disconnect()
 
 #endregion
