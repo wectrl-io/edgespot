@@ -6,9 +6,9 @@ import json
 from utils.logger import get_logger
 from utils.timer import Timer
 
-from .shelly_base import ShellyBase
+from .shelly_http_base import ShellyHttpBase
 
-class Shelly1L(ShellyBase):
+class ShellyEM(ShellyHttpBase):
 
 #region Attributes
 
@@ -39,7 +39,7 @@ class Shelly1L(ShellyBase):
 
         super().__init__(options, provider, adapter)
         self._vendor = "Alterco"
-        self._model = "Shgelly1L-GEN1"
+        self._model = "ShgellyEM-GEN1"
 
         # Set logger.
         self.__logger = get_logger(__name__)
@@ -87,6 +87,32 @@ class Shelly1L(ShellyBase):
         """
 
         url = f"{self._base_url}/settings/power/{index}"
+        return self._get_requests(url)
+
+    def emeter(self, index=0):
+        """Get emeter from the device.
+
+        Args:
+            index (int, optional): Chanel index. Defaults to 0.
+
+        Returns:
+            dict: Device response.
+        """
+
+        url = f"{self._base_url}/emeter/{index}"
+        return self._get_requests(url)
+
+    def settings_emeter(self, index=0):
+        """Get settings emeter from the device.
+
+        Args:
+            index (int, optional): Chanel index. Defaults to 0.
+
+        Returns:
+            dict: Device response.
+        """
+
+        url = f"{self._base_url}/settings/emeter/{index}"
         return self._get_requests(url)
 
 #endregion

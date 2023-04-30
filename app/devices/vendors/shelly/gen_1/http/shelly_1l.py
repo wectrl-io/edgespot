@@ -6,9 +6,9 @@ import json
 from utils.logger import get_logger
 from utils.timer import Timer
 
-from .shelly_base import ShellyBase
+from .shelly_http_base import ShellyHttpBase
 
-class Shelly1(ShellyBase):
+class Shelly1L(ShellyHttpBase):
 
 #region Attributes
 
@@ -39,7 +39,7 @@ class Shelly1(ShellyBase):
 
         super().__init__(options, provider, adapter)
         self._vendor = "Alterco"
-        self._model = "Shgelly1-GEN1"
+        self._model = "Shgelly1L-GEN1"
 
         # Set logger.
         self.__logger = get_logger(__name__)
