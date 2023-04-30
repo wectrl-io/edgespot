@@ -2,6 +2,8 @@
 # -*- coding: utf8 -*-
 
 import random
+import json
+
 from utils.timer import Timer
 from utils.logger import get_logger
 from devices.base_device import BaseDevice
@@ -78,8 +80,9 @@ class Dummy(BaseDevice):
         params = self.__get_params()
 
         data = self._provider.get_data(params)
-
-        self._adapter.pub_attribute("realm_name", "attribute_name", "asset_id", "Hello, world!")
+        dumps = json.dumps(data)
+        enc_dumps = dumps.encode("utf-8")
+        self._adapter.pub_attribute("realm_name", "attribute_name", "asset_id", enc_dumps)
 
         # self._adapter.send_telemetry(data)
 
