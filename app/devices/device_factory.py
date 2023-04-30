@@ -9,8 +9,11 @@ from devices.vendors.cwt.mb308v.mb308v import CWTMB308V
 from devices.vendors.dummy.dummy.dummy import Dummy
 from devices.vendors.huawei.sun2000.sun2000 import SUN2000
 from devices.vendors.nabu_casa.hass.hass import HomeAssistant
-from devices.vendors.shelly.gen_1.shelly_1 import Shelly1
-from devices.vendors.shelly.gen_1.shelly_1l import Shelly1L
+from devices.vendors.shelly.gen_1.http.shelly_1 import Shelly1
+from devices.vendors.shelly.gen_1.http.shelly_1l import Shelly1L
+from devices.vendors.shelly.gen_1.http.shelly_2 import Shelly2
+from devices.vendors.shelly.gen_1.http.shelly_2p5 import Shelly2p5
+from devices.vendors.shelly.gen_1.http.shelly_em import ShellyEM
 
 class DevicesFactory:
     """Devices factory class.
@@ -64,11 +67,20 @@ class DevicesFactory:
         elif vendor == "nabu_casa" and model == "hass":
             instance = HomeAssistant(options, provider, adapter)
 
-        elif vendor == "alterco" and model == "shelly1":
+        elif vendor == "alterco" and model == "shelly_1":
             instance = Shelly1(options, provider, adapter)
 
-        elif vendor == "alterco" and model == "shelly1l":
+        elif vendor == "alterco" and model == "shelly_1l":
             instance = Shelly1L(options, provider, adapter)
+
+        elif vendor == "alterco" and model == "shelly_2":
+            instance = Shelly2(options, provider, adapter)
+
+        elif vendor == "alterco" and model == "shelly_2p5":
+            instance = Shelly2p5(options, provider, adapter)
+
+        elif vendor == "alterco" and model == "shelly_em":
+            instance = ShellyEM(options, provider, adapter)
 
         else:
             raise NotImplementedError(f"Unsupported device model({model}), vendor({vendor})")
