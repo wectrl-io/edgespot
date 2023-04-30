@@ -46,6 +46,7 @@ class DevicesFactory:
             raise ValueError("Invalid options")
         else:
             options = settings["options"]
+            options["name"] = settings["name"]
 
         if vendor == "dummy" and model == "dummy":
             instance = Dummy(options, provider, adapter)
