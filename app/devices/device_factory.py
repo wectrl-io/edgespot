@@ -14,6 +14,7 @@ from devices.vendors.shelly.gen_1.http.shelly_1l import Shelly1L
 from devices.vendors.shelly.gen_1.http.shelly_2 import Shelly2
 from devices.vendors.shelly.gen_1.http.shelly_2p5 import Shelly2p5
 from devices.vendors.shelly.gen_1.http.shelly_em import ShellyEM
+from devices.vendors.shelly.gen_1.http.shelly_3em import Shelly3EM
 
 class DevicesFactory:
     """Devices factory class.
@@ -81,6 +82,9 @@ class DevicesFactory:
 
         elif vendor == "alterco" and model == "shelly_em":
             instance = ShellyEM(options, provider, adapter)
+
+        elif vendor == "alterco" and model == "shelly_3em":
+            instance = Shelly3EM(options, provider, adapter)
 
         else:
             raise NotImplementedError(f"Unsupported device model({model}), vendor({vendor})")
