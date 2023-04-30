@@ -63,18 +63,30 @@ class Shelly1L(ShellyBase):
         url = f"{self._base_url}/relay/{index}?turn={turn}"
         return self._get_requests(url)
 
-    def settings_relay(self):
+    def settings_relay(self, index=0):
         """Get settings relay from the device.
+
+        Args:
+            index (int, optional): Chanel index. Defaults to 0.
+
+        Returns:
+            dict: Device response.
         """
 
-        url = f"{self._base_url}/settings/relay/0"
+        url = f"{self._base_url}/settings/relay/{index}"
         return self._get_requests(url)
 
-    def settings_power(self):
+    def settings_power(self, index=0):
         """Get settings power from the device.
+
+        Args:
+            index (int, optional): Chanel index. Defaults to 0.
+
+        Returns:
+            dict: Device response.
         """
 
-        url = f"{self._base_url}/settings/power/0"
+        url = f"{self._base_url}/settings/power/{index}"
         return self._get_requests(url)
 
 #endregion

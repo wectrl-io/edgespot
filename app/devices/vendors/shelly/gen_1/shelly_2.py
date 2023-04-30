@@ -8,7 +8,7 @@ from utils.timer import Timer
 
 from .shelly_base import ShellyBase
 
-class Shelly1(ShellyBase):
+class Shelly2(ShellyBase):
 
 #region Attributes
 
@@ -39,7 +39,7 @@ class Shelly1(ShellyBase):
 
         super().__init__(options, provider, adapter)
         self._vendor = "Alterco"
-        self._model = "Shgelly1-GEN1"
+        self._model = "Shgelly2-GEN1"
 
         # Set logger.
         self.__logger = get_logger(__name__)

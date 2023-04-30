@@ -8,7 +8,7 @@ from utils.timer import Timer
 
 from .shelly_base import ShellyBase
 
-class Shelly1(ShellyBase):
+class ShellyEM(ShellyBase):
 
 #region Attributes
 
@@ -39,7 +39,7 @@ class Shelly1(ShellyBase):
 
         super().__init__(options, provider, adapter)
         self._vendor = "Alterco"
-        self._model = "Shgelly1-GEN1"
+        self._model = "ShgellyEM-GEN1"
 
         # Set logger.
         self.__logger = get_logger(__name__)
@@ -87,6 +87,32 @@ class Shelly1(ShellyBase):
         """
 
         url = f"{self._base_url}/settings/power/{index}"
+        return self._get_requests(url)
+
+    def emeter(self, index=0):
+        """Get emeter from the device.
+
+        Args:
+            index (int, optional): Chanel index. Defaults to 0.
+
+        Returns:
+            dict: Device response.
+        """
+
+        url = f"{self._base_url}/emeter/{index}"
+        return self._get_requests(url)
+
+    def settings_emeter(self, index=0):
+        """Get settings emeter from the device.
+
+        Args:
+            index (int, optional): Chanel index. Defaults to 0.
+
+        Returns:
+            dict: Device response.
+        """
+
+        url = f"{self._base_url}/settings/emeter/{index}"
         return self._get_requests(url)
 
 #endregion
