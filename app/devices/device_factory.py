@@ -46,6 +46,10 @@ class DevicesFactory:
             raise ValueError("Invalid options")
         else:
             options = settings["options"]
+
+        if "name" not in settings:
+            raise ValueError("Invalid name")
+        else:
             options["name"] = settings["name"]
 
         if vendor == "dummy" and model == "dummy":
