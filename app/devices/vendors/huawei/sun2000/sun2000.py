@@ -44,7 +44,10 @@ class SUN2000(BaseDevice):
         # Set logger.
         self.__logger = get_logger(__name__)
 
-        # Set timer.
+        # Set timer. (Default value is 1 second.)
+        update_period = self._get_option("update_period", 1)
+        update_period = int(update_period)
+        self.__update_period = update_period
         self.__timer = Timer(self.__update_period)
         self.__timer.set_callback(self.__timer_cb)
 

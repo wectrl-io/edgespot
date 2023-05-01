@@ -57,8 +57,10 @@ class HomeAssistant(BaseDevice):
         token = self._get_option("token")
         self.__hass = Hass(hassurl=hassurl, token=token)
 
-        # Update period of the pooling cycle.
-        self.__update_period = self._get_option("update_period", 1)
+        # Set timer. (Default value is 1 second.)
+        update_period = self._get_option("update_period", 1)
+        update_period = int(update_period)
+        self.__update_period = update_period
         self.__timer = Timer(self.__update_period)
         self.__timer.set_callback(self.__timer_cb)
 
