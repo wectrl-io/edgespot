@@ -82,7 +82,7 @@ class BaseDevice(object):
 
 #region Protected Methods
 
-    def _get_option(self, name, default=None):
+    def _get_option(self, name: str, default=None):
         """Get option from options.
 
         Args:
