@@ -4,7 +4,7 @@
 from utils.logger import get_logger
 from devices.base_device import BaseDevice
 
-class ShellyBase(BaseDevice):
+class Gen1Device(BaseDevice):
     """Shelly devices generation 1 base class.
     """
 

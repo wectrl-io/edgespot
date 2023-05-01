@@ -4,11 +4,11 @@
 import json
 
 from utils.logger import get_logger
-from ..gen1_device import Gen1Device
+from ..gen2_device import Gen2Device
 
 import requests
 
-class ShellyHttpBase(Gen1Device):
+class ShellyHttpBase(Gen2Device):
 
 #region Attributes
 
@@ -79,25 +79,22 @@ class ShellyHttpBase(Gen1Device):
 
 #region Public Method (API)
 
-    def settings(self):
-        """Get settings from the device.
+    def config(self):
+        """Get configuration from the device.
+
+        Returns:
+            dict: Response from the device.
         """
-
-        url = f"{self._base_url}/settings"
-        return self._get_requests(url)
-
-    def settings_actions(self):
-        """Get settings actions from the device.
-        """
-
-        url = f"{self._base_url}/settings/actions"
+        url = f"{self._base_url}/rpc/Shelly.GetConfig"
         return self._get_requests(url)
 
     def status(self):
         """Get status from the device.
-        """
 
-        url = f"{self._base_url}/status"
+        Returns:
+            dict: Response from the device.
+        """
+        url = f"{self._base_url}/rpc/Shelly.GetStatus"
         return self._get_requests(url)
 
 #endregion
