@@ -15,6 +15,7 @@ from devices.vendors.shelly.gen_1.http.shelly_2 import Shelly2
 from devices.vendors.shelly.gen_1.http.shelly_2p5 import Shelly2p5
 from devices.vendors.shelly.gen_1.http.shelly_em import ShellyEM
 from devices.vendors.shelly.gen_1.http.shelly_3em import Shelly3EM
+from devices.vendors.shelly.gen_2.http.shelly_plus_1 import ShellyPlus1
 
 class DevicesFactory:
     """Devices factory class.
@@ -68,23 +69,26 @@ class DevicesFactory:
         elif vendor == "nabu_casa" and model == "hass":
             instance = HomeAssistant(options, provider, adapter)
 
-        elif vendor == "alterco" and model == "shelly_1":
+        elif vendor == "alterco" and model == "shelly_1_gen1":
             instance = Shelly1(options, provider, adapter)
 
-        elif vendor == "alterco" and model == "shelly_1l":
+        elif vendor == "alterco" and model == "shelly_1l_gen1":
             instance = Shelly1L(options, provider, adapter)
 
-        elif vendor == "alterco" and model == "shelly_2":
+        elif vendor == "alterco" and model == "shelly_2_gen1":
             instance = Shelly2(options, provider, adapter)
 
-        elif vendor == "alterco" and model == "shelly_2p5":
+        elif vendor == "alterco" and model == "shelly_2p5_gen1":
             instance = Shelly2p5(options, provider, adapter)
 
-        elif vendor == "alterco" and model == "shelly_em":
+        elif vendor == "alterco" and model == "shelly_em_gen1":
             instance = ShellyEM(options, provider, adapter)
 
-        elif vendor == "alterco" and model == "shelly_3em":
+        elif vendor == "alterco" and model == "shelly_3em_gen1":
             instance = Shelly3EM(options, provider, adapter)
+
+        elif vendor == "alterco" and model == "shelly_plus_1_gen2":
+            instance = ShellyPlus1(options, provider, adapter)
 
         else:
             raise NotImplementedError(f"Unsupported device model({model}), vendor({vendor})")
