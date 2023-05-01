@@ -4,7 +4,7 @@
 import json
 
 from utils.logger import get_logger
-from ..gen1_device import Gen1Device
+from devices.vendors.shelly.gen_1.gen1_device import Gen1Device
 
 import requests
 
