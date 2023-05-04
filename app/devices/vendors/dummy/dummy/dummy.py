@@ -47,7 +47,7 @@ class Dummy(BaseDevice):
 
         # Set timer. (Default value is 1 second.)
         update_period = self._get_option("update_period", 1)
-        update_period = int(update_period)
+        update_period = float(update_period)
         self.__update_period = update_period
         self.__timer = Timer(self.__update_period)
         self.__timer.set_callback(self.__timer_cb)
@@ -69,7 +69,7 @@ class Dummy(BaseDevice):
         data = self._provider.get_data(params)
         dumps = json.dumps(data)
         enc_dumps = dumps.encode("utf-8")
-        self._adapter.pub_attribute("realm_name", "attribute_name", "asset_id", enc_dumps)
+        self._adapter.pub_attribute("realm_name", "attribute_name", self.name, enc_dumps)
 
         # self._adapter.send_telemetry(data)
 

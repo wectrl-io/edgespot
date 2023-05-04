@@ -46,7 +46,7 @@ class CWTMB308V(BaseDevice):
 
         # Set timer. (Default value is 1 second.)
         update_period = self._get_option("update_period", 1)
-        update_period = int(update_period)
+        update_period = float(update_period)
         self.__update_period = update_period
         self.__timer = Timer(self.__update_period)
         self.__timer.set_callback(self.__timer_cb)
@@ -75,35 +75,42 @@ class CWTMB308V(BaseDevice):
         # TODO: Create interface way to send information to the adapters!!!
 
         # Read discrete inputs.
-        rr = client.read_coils(0, 12, unit=unit)
+        rr = client.read_coils(0, 12, unit)
         if not rr.isError():
             for index in range(0, 12):
                 key = f"RO{index}"
                 parameters[key] = 1 if rr.bits[index] else 0
 
         # Read discrete inputs.
-        rr = client.read_discrete_inputs(0, 8, unit=unit)
+        rr = client.read_discrete_inputs(0, 8, unit)
         if not rr.isError():
             for index in range(0, 8):
                 key = f"DI{index}"
                 parameters[key] = 1 if rr.bits[index] else 0
 
         # Read analog inputs.
-        rr = client.read_input_registers(0, 8, unit=unit)
+        rr = client.read_input_registers(0, 8, unit)
         if not rr.isError():
             for index in range(0, 8):
                 key = f"AI{index}"
                 parameters[key] = rr.registers[index]
 
         # Read analog outputs.
-        rr = client.read_holding_registers(0, 4, unit=unit)
+        rr = client.read_holding_registers(0, 4, unit)
         if not rr.isError():
             for index in range(0, 4):
                 key = f"AO{index}"
                 parameters[key] = rr.registers[index]
 
+        
+        for parameter in parameters:
+            self._adapter.pub_attribute("gpio_bi", parameter, self.name, json.dumps(parameters[parameter]))
+
+
+        # self.__logger.debug(f"Data: {parameters}")
+
         # Send data to the cloud.
-        self._adapter.send_telemetry(parameters)
+        # self._adapter.send_telemetry(parameters)
 
     def __get_gpio_status(self):
 
@@ -144,7 +151,7 @@ class CWTMB308V(BaseDevice):
         client = self._provider.communicator
         unit = self._get_option("modbus_id")
         client.connect()
-        client.write_coils(0, states, unit=unit)
+        client.write_coils(0, states, unit)
         client.close()
 
 #endregion
@@ -154,7 +161,7 @@ class CWTMB308V(BaseDevice):
     def init(self):
 
         self._adapter.connect()
-        self._adapter.subscribe(gpio_state=self.__get_gpio_status, callback=self.__on_message)
+        # self._adapter.subscribe(gpio_state=self.__get_gpio_status, callback=self.__on_message)
 
     def update(self):
 

@@ -59,7 +59,7 @@ class HomeAssistant(BaseDevice):
 
         # Set timer. (Default value is 1 second.)
         update_period = self._get_option("update_period", 1)
-        update_period = int(update_period)
+        update_period = float(update_period)
         self.__update_period = update_period
         self.__timer = Timer(self.__update_period)
         self.__timer.set_callback(self.__timer_cb)
@@ -129,7 +129,7 @@ class HomeAssistant(BaseDevice):
         client = self._provider.communicator
         unit = self._get_option("modbus_id")
         client.connect()
-        client.write_coils(0, states, unit=unit)
+        client.write_coils(0, states, unit)
         client.close()
             
 
