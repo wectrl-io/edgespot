@@ -29,19 +29,19 @@ class DevicesFactory:
 
         vendor = None
         if "vendor" not in settings:
-            raise Exception("Invalid vendor")
+            raise ValueError("Invalid vendor")
         else:
             vendor = settings["vendor"]
 
         model = None
         if "model" not in settings:
-            raise Exception("Invalid model")
+            raise ValueError("Invalid model")
         else:
             model = settings["model"]
 
         options = None
         if "options" not in settings:
-            raise Exception("Invalid options")
+            raise ValueError("Invalid options")
         else:
             options = settings["options"]
 

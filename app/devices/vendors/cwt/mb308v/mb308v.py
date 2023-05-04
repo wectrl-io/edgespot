@@ -70,6 +70,8 @@ class CWTMB308V(BaseDevice):
         # Create parameters.
         parameters = {}
 
+        # TODO: Create interface way to send information to the adapters!!!
+
         # Read discrete inputs.
         rr = client.read_coils(0, 12, unit=unit)
         if not rr.isError():
@@ -142,7 +144,6 @@ class CWTMB308V(BaseDevice):
         client.connect()
         client.write_coils(0, states, unit=unit)
         client.close()
-            
 
 #endregion
 

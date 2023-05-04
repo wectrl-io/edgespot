@@ -23,7 +23,7 @@ class ThingsBoardMQTTClient(BaseAdapter):
     """MQTT client.
     """
 
-    __host = "devcloud.dreamtomation.com"
+    __host = "127.0.0.1"
     """Host of the broker.
     """
 
@@ -59,13 +59,13 @@ class ThingsBoardMQTTClient(BaseAdapter):
         # Get port to the cloud.
         port = self._get_option("port")
         if 1 < port > 65535 :
-            raise Exception(f"Invalid parameter port = {port}")
+            raise ValueError(f"Invalid parameter port = {port}")
         self.__port = port
 
         # Get keep alive time to the cloud.
         keep_alive = self._get_option("keep_alive")
         if 1 < keep_alive > 3600 :
-            raise Exception(f"Invalid parameter keep_alive = {keep_alive}")
+            raise ValueError(f"Invalid parameter keep_alive = {keep_alive}")
         self.__keep_alive = keep_alive
 
         # Get token data.
@@ -89,7 +89,7 @@ class ThingsBoardMQTTClient(BaseAdapter):
         """
 
         if self.__mqtt_client is None:
-            raise Exception("Invalid MQTT client instance.")
+            raise ValueError("Invalid MQTT client instance.")
 
         # Connect to the broker.
         self.__mqtt_client.connect(host=self.__host, port=self.__port, keepalive=self.__keep_alive)
@@ -105,7 +105,7 @@ class ThingsBoardMQTTClient(BaseAdapter):
         """
 
         if self.__mqtt_client is None:
-            raise Exception("Invalid MQTT client instance.")
+            raise ValueError("Invalid MQTT client instance.")
 
         # Continue monitoring the incoming messages for subscribed topic.
         self.__mqtt_client.loop()
@@ -118,7 +118,7 @@ class ThingsBoardMQTTClient(BaseAdapter):
         """
 
         if self.__mqtt_client is None:
-            raise Exception("Invalid MQTT client instance.")
+            raise ValueError("Invalid MQTT client instance.")
 
         self.__mqtt_client.disconnect()
 
@@ -134,7 +134,7 @@ class ThingsBoardMQTTClient(BaseAdapter):
         """
 
         if self.__mqtt_client is None:
-            raise Exception("Invalid MQTT client instance.")
+            raise ValueError("Invalid MQTT client instance.")
 
         self.__mqtt_client.publish(topic, message)
 
@@ -147,7 +147,7 @@ class ThingsBoardMQTTClient(BaseAdapter):
         """
 
         if self.__mqtt_client is None:
-            raise Exception("Invalid MQTT client instance.")
+            raise ValueError("Invalid MQTT client instance.")
 
         # Constancy check the timestamp.
         if time_stamp <= 0:
@@ -226,13 +226,13 @@ class ThingsBoardMQTTClient(BaseAdapter):
         """
 
         if "host" not in options:
-            raise Exception("No host provided.")
+            raise ValueError("No host provided.")
 
         if "port" not in options:
-            raise Exception("No port provided.")
+            raise ValueError("No port provided.")
 
         if "token" not in options:
-            raise Exception("No token provided.")
+            raise ValueError("No token provided.")
 
         return ThingsBoardMQTTClient(options)
 

@@ -139,7 +139,7 @@ class ApplicationSettings:
             # Default things board credentials.
             if "broker" not in self.__config:
                 self.__config["broker"] = {
-                    "host": "devcloud.dreamtomation.com",
+                    "host": "127.0.0.1",
                     "port": 1883,
                     "token": "A1_TEST_TOKEN",
                 }

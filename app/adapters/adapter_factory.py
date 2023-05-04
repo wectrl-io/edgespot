@@ -6,6 +6,9 @@ Devices factory class.
 """
 
 from adapters.vendors.thingsboard.thingsboard import ThingsBoardMQTTClient
+from adapters.vendors.openremote.openremote import OpenRemoteMQTTClient
+
+from exceptions.unsupported_adapter import UnsupportedAdapter
 
 class AdaptersFactory:
     """Adapters factory class.
@@ -26,26 +29,29 @@ class AdaptersFactory:
 
         vendor = None
         if "vendor" not in settings:
-            raise Exception("Invalid vendor")
+            raise ValueError("Invalid vendor")
         else:
             vendor = settings["vendor"]
 
         version = None
         if "version" not in settings:
-            raise Exception("Invalid model")
+            raise ValueError("Invalid model")
         else:
             version = settings["version"]
 
         options = None
         if "options" not in settings:
-            raise Exception("Invalid options")
+            raise ValueError("Invalid options")
         else:
             options = settings["options"]
 
         if vendor == "ThingsBoardMQTTClient" and version == "1.0":
             instance = ThingsBoardMQTTClient.get_instance(options)
 
+        elif vendor == "OpenRemoteMQTTClient" and version == "1.0":
+            instance = OpenRemoteMQTTClient.get_instance(options)
+
         else:
-            raise Exception(f"Unsupported adapter version({version}), vendor({vendor})")
+            raise UnsupportedAdapter(f"Unsupported adapter version({version}), vendor({vendor})")
 
         return instance

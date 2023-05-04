@@ -22,7 +22,7 @@ class BaseAdapter(object):
     def _get_option(self, name):
 
         if name not in self._options:
-            raise Exception(f"Invalid option: {name}")
+            raise ValueError(f"Invalid option: {name}")
 
         return self._options[name]
 

@@ -70,7 +70,7 @@ class NB114(BaseProvider):
         elif framer_type == "ascii":
             framer = ModbusAsciiFramer
         else:
-            raise Exception(f"Unsupported framer type({framer_type})")
+            raise ValueError(f"Unsupported framer type({framer_type})")
         return framer
 
 #endregion
