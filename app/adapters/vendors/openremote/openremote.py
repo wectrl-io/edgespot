@@ -137,7 +137,7 @@ class OpenRemoteMQTTClient(BaseAdapter):
     def __on_disconnect(self, client, userdata, rc):
 
         self.__logger.info(\
-            f"Disconnect {self.__host}; rc {rc}")
+            f"Disconnect from {self.__host}, with return code {rc}")
 
 #endregion
 
@@ -204,6 +204,7 @@ class OpenRemoteMQTTClient(BaseAdapter):
 
         # Connect to the broker.
         self.__mqtt_client.connect(host=self.__host, port=self.__port, keepalive=self.__keep_alive)
+        self.__mqtt_client.loop()
 
     def update(self):
         """Update the MQTT client.
