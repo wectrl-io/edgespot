@@ -2,9 +2,9 @@
 # -*- coding: utf8 -*-
 
 from utils.logger import get_logger
-from devices.base_device import BaseDevice
+from devices.vendors.shelly.shelly_base import ShellyBase
 
-class Gen1Device(BaseDevice):
+class Gen1Device(ShellyBase):
     """Shelly devices generation 1 base class.
     """
 
