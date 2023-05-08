@@ -6,7 +6,7 @@ from utils.logger import get_logger
 
 import paho.mqtt.client as mqtt
 
-class OpenRemoteMQTTClient(BaseAdapter):
+class OpenRemote(BaseAdapter):
     """Open Remote MQTT client.
     """
 
@@ -305,6 +305,6 @@ class OpenRemoteMQTTClient(BaseAdapter):
         if "client_id" not in options:
             raise ValueError("No client ID provided.")
 
-        return OpenRemoteMQTTClient(options)
+        return OpenRemote(options)
 
 #endregion
