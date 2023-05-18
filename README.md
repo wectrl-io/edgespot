@@ -1,22 +1,22 @@
-# Dreamtomation sunspot software
+# wectrl.io SunSpot software
 
-Remote parameters monitoring software "sunspot" 
+Remote parameters/devices monitoring software for using as a middleware with managament and monitoring IoT systems.
 
-# Instalation
+# Setup Development environment
 
  - Make virtual environment
 ```sh
-python -m venv dreamtomation_sunspot
+python -m venv venv
 ```
 
- - Go to virtual environment
+ - Activate virtual environment (Unix/MacOS)
 ```sh
-cd dreamtomation_sunspot/Scripts
+source venv/bin/activate
 ```
 
- - Activate virtual environment
-```sh
-activate
+ - Activate virtual environment (Windows)
+```ps
+venv/bin/activate.ps1
 ```
 
  - Upgrade virtual environment
@@ -24,14 +24,11 @@ activate
 python -m pip install --upgrade pip
 ```
 
- - Upgrade virtual environment
-```sh
-python -m pip install --upgrade pip
-```
-
- - Install requirement for virtual environment
+ - Install requirements for virtual environment
 ```sh
 python -m pip install -r requirements.txt
 ```
 
+# Installation
 
+## Using Docker *TODO*
