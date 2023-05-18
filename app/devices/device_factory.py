@@ -9,6 +9,13 @@ from devices.vendors.cwt.mb308v.mb308v import CWTMB308V
 from devices.vendors.dummy.dummy.dummy import Dummy
 from devices.vendors.huawei.sun2000.sun2000 import SUN2000
 from devices.vendors.nabu_casa.hass.hass import HomeAssistant
+from devices.vendors.shelly.gen_1.http.shelly_1 import Shelly1
+from devices.vendors.shelly.gen_1.http.shelly_1l import Shelly1L
+from devices.vendors.shelly.gen_1.http.shelly_2 import Shelly2
+from devices.vendors.shelly.gen_1.http.shelly_2p5 import Shelly2p5
+from devices.vendors.shelly.gen_1.http.shelly_em import ShellyEM
+from devices.vendors.shelly.gen_1.http.shelly_3em import Shelly3EM
+from devices.vendors.shelly.gen_2.http.shelly_plus_1 import ShellyPlus1
 
 class DevicesFactory:
     """Devices factory class.
@@ -45,6 +52,11 @@ class DevicesFactory:
         else:
             options = settings["options"]
 
+        if "name" not in settings:
+            raise ValueError("Invalid name")
+        else:
+            options["name"] = settings["name"]
+
         if vendor == "dummy" and model == "dummy":
             instance = Dummy(options, provider, adapter)
 
@@ -57,8 +69,28 @@ class DevicesFactory:
         elif vendor == "nabu_casa" and model == "hass":
             instance = HomeAssistant(options, provider, adapter)
 
+        elif vendor == "alterco" and model == "shelly_1_gen1":
+            instance = Shelly1(options, provider, adapter)
+
+        elif vendor == "alterco" and model == "shelly_1l_gen1":
+            instance = Shelly1L(options, provider, adapter)
+
+        elif vendor == "alterco" and model == "shelly_2_gen1":
+            instance = Shelly2(options, provider, adapter)
+
+        elif vendor == "alterco" and model == "shelly_2p5_gen1":
+            instance = Shelly2p5(options, provider, adapter)
+
+        elif vendor == "alterco" and model == "shelly_em_gen1":
+            instance = ShellyEM(options, provider, adapter)
+
+        elif vendor == "alterco" and model == "shelly_3em_gen1":
+            instance = Shelly3EM(options, provider, adapter)
+
+        elif vendor == "alterco" and model == "shelly_plus_1_gen2":
+            instance = ShellyPlus1(options, provider, adapter)
 
         else:
-            raise Exception(f"Unsupported device model({model}), vendor({vendor})")
+            raise NotImplementedError(f"Unsupported device model({model}), vendor({vendor})")
 
         return instance

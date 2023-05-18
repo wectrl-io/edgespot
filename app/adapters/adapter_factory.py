@@ -5,8 +5,8 @@
 Devices factory class.
 """
 
-from adapters.vendors.thingsboard.thingsboard import ThingsBoardMQTTClient
-from adapters.vendors.openremote.openremote import OpenRemoteMQTTClient
+from adapters.vendors.things_board.mqtt.things_board import ThingsBoard as ThingsBoardMQTTClient
+from adapters.vendors.open_remote.mqtt.open_remote import OpenRemote as OpenRemoteMQTTClient
 
 from exceptions.unsupported_adapter import UnsupportedAdapter
 

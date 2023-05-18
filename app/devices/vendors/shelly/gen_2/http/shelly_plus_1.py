@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
-import random
 import json
 
 from utils.logger import get_logger
 from utils.timer import Timer
 
-from devices.base_device import BaseDevice
+from .shelly_http_base import ShellyHttpBase
 
-class Dummy(BaseDevice):
-    """Dummy Device
-    """
+class ShellyPlus1(ShellyHttpBase):
 
 #region Attributes
 
@@ -35,12 +32,14 @@ class Dummy(BaseDevice):
         """Constructor
 
         Args:
-            options (dict): Options data.
+            options (dict): Instance options.
+            provider (object): Data provider.
+            adapter (object): Adapter collector.
         """
 
         super().__init__(options, provider, adapter)
-        self._vendor = "Dummy"
-        self._model = "Dummy"
+        self._vendor = "Alterco"
+        self._model = "ShellyPlus1-GEN2"
 
         # Set logger.
         self.__logger = get_logger(__name__)
@@ -54,22 +53,25 @@ class Dummy(BaseDevice):
 
 #endregion
 
+#region Public Methods (API)
+
+#endregion
+
 #region Private Methods
-
-    def __get_params(self):
-
-        return {"value1": random.randint(0, 9), "value2": random.randint(0, 9)}
 
     def __timer_cb(self, timer):
 
         timer.clear()
 
-        params = self.__get_params()
+        device_status = self.status()
 
-        data = self._provider.get_data(params)
-        dumps = json.dumps(data)
-        enc_dumps = dumps.encode("utf-8")
-        self._adapter.pub_attribute("realm_name", "attribute_name", self.name, enc_dumps)
+        # print(device_status["wifi_sta"])
+
+        if device_status is not None:
+            for realm in device_status:
+                self._adapter.pub_attribute("status", realm, self.name, json.dumps(device_status[realm]))
+
+        # self._adapter.pub_attribute("realm_name", "attribute_name", "asset_id", "Hello, world.")
 
         # self._adapter.send_telemetry(data)
 

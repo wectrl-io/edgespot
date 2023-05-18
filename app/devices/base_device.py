@@ -9,12 +9,18 @@ class BaseDevice(object):
     """Base device class.
     """
 
+#region Attributes
+
     _options = {}
     """Options
     """
 
     _model = "Default Model"
     _vendor = "Default Vendor"
+
+#endregion
+
+#region Properties
 
     @property
     def model(self):
@@ -50,8 +56,21 @@ class BaseDevice(object):
 
     __repr__ = __str__
 
-    def __init__(self, options, provider, adapter):
+#endregion
 
+#region Constructor
+
+    def __init__(self, options, provider, adapter):
+        """Constructor
+
+        Args:
+            options (dict): Instance options.
+            provider (object): Data provider.
+            adapter (object): Adapter collector.
+
+        Raises:
+            ValueError: _description_
+        """
         if options is None:
             raise ValueError("Invalid options")
 
@@ -59,7 +78,23 @@ class BaseDevice(object):
         self._provider = provider
         self._adapter = adapter
 
-    def _get_option(self, name, default=None):
+#endregion
+
+#region Protected Methods
+
+    def _get_option(self, name: str, default=None):
+        """Get option from options.
+
+        Args:
+            name (str): Option name.
+            default (any, optional): Default value if there any. Defaults to None.
+
+        Raises:
+            ValueError: Invalid option name.
+
+        Returns:
+            str: option value.
+        """
 
         if name not in self._options and default is None:
             raise ValueError(f"Invalid option: {name}")
@@ -69,6 +104,9 @@ class BaseDevice(object):
 
         return self._options[name]
 
+#endregion
+
+#region Public Methods
 
     def init(self):
 
@@ -81,3 +119,5 @@ class BaseDevice(object):
     def shutdown(self):
 
         pass
+
+#endregion

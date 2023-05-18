@@ -9,7 +9,7 @@ from utils.logger import get_logger
 
 import paho.mqtt.client as mqtt
 
-class ThingsBoardMQTTClient(BaseAdapter):
+class ThingsBoard(BaseAdapter):
     """Things Board MQTT client.
     """
 
@@ -234,6 +234,6 @@ class ThingsBoardMQTTClient(BaseAdapter):
         if "token" not in options:
             raise ValueError("No token provided.")
 
-        return ThingsBoardMQTTClient(options)
+        return ThingsBoard(options)
 
 #endregion
