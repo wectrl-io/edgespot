@@ -7,6 +7,7 @@ Providers factory
 
 from providers.vendors.dummy.dummy.dummy import Dummy
 from providers.vendors.ebyte.nb114.nb114 import NB114
+from providers.vendors.zlan.d_5143d.d_5143d import D_5143D
 from providers.vendors.native.uart.uart import NativeUart
 
 from exceptions.unsupported_provider import UnsupportedProvider
@@ -51,6 +52,9 @@ class ProvidersFactory(object):
 
         elif vendor == "ebyte" and model == "nb114":
             instance = NB114(options)
+
+        elif vendor == "zlan" and model == "5143d":
+            instance = D_5143D(options)
 
         elif vendor == "native" and model == "uart":
             instance = NativeUart(options)
