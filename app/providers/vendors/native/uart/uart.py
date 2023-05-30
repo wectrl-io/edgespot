@@ -23,7 +23,7 @@ class NativeUart(BaseProvider):
 
 #endregion
 
-#region Propertyes
+#region Properties
 
     @property
     def communicator(self):
