@@ -23,6 +23,8 @@ from devices.vendors.shelly.gen_2.http.shelly_plus_1 import ShellyPlus1
 
 from devices.vendors.eastron.sdm120.sdm120 import SDM120
 
+from devices.vendors.donkger.xy_md02.xy_md02 import XY_MD02
+
 #region File Attributes
 
 __author__ = "Orlin Dimitrov"
@@ -127,6 +129,9 @@ class DevicesFactory:
 
         elif vendor == "eastron" and model == "sdm120":
             instance = SDM120(options, provider, adapter)
+
+        elif vendor == "donkger" and model == "xy-md02":
+            instance = XY_MD02(options, provider, adapter)
 
         else:
             raise NotImplementedError(f"Unsupported device model({model}), vendor({vendor})")
