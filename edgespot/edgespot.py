@@ -8,7 +8,7 @@ from devices.device_factory import DevicesFactory
 
 from utils.logger import get_logger
 
-from utils.settings import ApplicationSettings
+from utils.config import AppConfig
 
 from utils.service_locator.service_locator import ServiceLocator
 
@@ -79,7 +79,7 @@ class Edgespot(object):
         self.__service_locator = ServiceLocator.get_instance()
 
         # Get settings.
-        self.__settings = ApplicationSettings.get_instance()
+        self.__settings = AppConfig.get_instance()
 
         # Create and add adapters.
         adapters = self.__settings.config["adapters"]

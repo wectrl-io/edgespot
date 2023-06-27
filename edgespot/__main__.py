@@ -4,9 +4,10 @@
 import signal
 import sys
 import traceback
+import argparse
 
 from utils.logger import crate_log_file, get_logger
-from utils.settings import ApplicationSettings
+from utils.config import AppConfig
 
 from edgespot import Edgespot
 
@@ -74,8 +75,16 @@ def main():
     signal.signal(signal.SIGINT, interrupt_handler)
     signal.signal(signal.SIGTERM, interrupt_handler)
 
+    # Create parser.
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--config", type=str, default="config.yaml", help="Path to the configuration file.")
+
+    # Take arguments.
+    args = parser.parse_args()
+
     # Get settings.
-    settings = ApplicationSettings.get_instance()
+    settings = AppConfig.get_instance(args.config)
 
     # Read settings content.
     settings.load()
