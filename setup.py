@@ -5,7 +5,7 @@ import sys
 
 from setuptools import find_packages, setup
 
-import sunspot
+import edgespot
 
 #region File Attributes
 
@@ -53,15 +53,15 @@ install_requires = ["certifi==2022.12.7", "charset-normalizer==3.1.0",
                     "urllib3==1.26.15"],
 
 setup(
-    name="sunspot",
-    packages=find_packages(include=["sunspot", 'sunspot.*']),
+    name="edgespot",
+    packages=find_packages(include=["edgespot", 'edgespot.*']),
     entry_points={
         'console_scripts': [
-            'sunspot = sunspot.__main__:main'
+            'edgespot = edgespot.__main__:main'
         ]
     },
     version=__version__,
-    description="Sunspot we-ctrl.io edge cloud software.",
+    description="Edgespot we-ctrl.io edge cloud software.",
     long_description=long_description(),
     long_description_content_type='text/markdown',
     author=__author__,
@@ -73,7 +73,7 @@ setup(
     tests_require=[],
     test_suite="",
     project_urls={
-        'GitHub': 'https://github.com/wectrl-io/sunspot',
+        'GitHub': 'https://github.com/wectrl-io/edgespot',
     },
     classifiers=[
         'Development Status :: 1 - Debug',

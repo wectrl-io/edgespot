@@ -41,8 +41,8 @@ __class_name__ = ""
 
 #endregion
 
-class Sunspot(object):
-    """Sun spot application logic.
+class Edgespot(object):
+    """Edgespot application logic.
     """
 
 #region Attributes

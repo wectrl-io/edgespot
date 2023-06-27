@@ -98,7 +98,7 @@ class ApplicationSettings:
 
             # Current file path. & Go to file.
             cwf = os.path.dirname(os.path.abspath(__file__))
-            self.__file_name = os.path.join(cwf, "..", "settings.yaml")
+            self.__file_name = os.path.join(cwf, "..", "config.yaml")
 
         else:
             self.__file_name = file_name
