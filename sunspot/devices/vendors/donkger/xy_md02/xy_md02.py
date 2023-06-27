@@ -88,11 +88,11 @@ class XY_MD02(BaseDevice):
 
         self._parameters.append(
             Parameter("Temperature", "ºC",
-            ParameterType.UINT16_T, [0, 1], FunctionCode.ReadInputRegisters))
+            ParameterType.UINT16_T, [1], FunctionCode.ReadInputRegisters))
 
         self._parameters.append(\
             Parameter("Humidity", "Rh",
-            ParameterType.UINT16_T, [0, 2], FunctionCode.ReadInputRegisters))
+            ParameterType.UINT16_T, [2], FunctionCode.ReadInputRegisters))
 
     def __timer_cb(self, timer):
 
@@ -143,6 +143,10 @@ class XY_MD02(BaseDevice):
             rr = client.read_input_registers(min(param.addresses), len(param.addresses), unit)
             if not rr.isError():
                 value = Converter.convert(param.data_type, [0, 1], rr.registers)
+
+                if value is not None:
+                    value = value / 10.0
+
                 self._adapter.pub_attribute("PTS", self.name, param.name, str(value))
 
         client.close()
