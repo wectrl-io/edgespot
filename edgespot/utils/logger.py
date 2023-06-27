@@ -6,7 +6,7 @@ import os
 import logging
 from time import gmtime, strftime
 
-from utils.settings import ApplicationSettings
+from utils.config import AppConfig
 
 #region Variables
 
@@ -25,7 +25,7 @@ def crate_log_file(logs_dir_name="logs"):
         Path to the log directory.
     """
 
-    settings = ApplicationSettings.get_instance()
+    settings = AppConfig.get_instance()
     debug_level = settings.debug_level
     full_dir_path = "/"
 
@@ -72,7 +72,7 @@ def get_logger(module_name):
     __MODULES_NAMES.append(module_name)
 
     # Get debug level.
-    debug_level = ApplicationSettings.get_instance().debug_level
+    debug_level = AppConfig.get_instance().debug_level
 
     # Create console handler.
     console_handler = logging.StreamHandler()
