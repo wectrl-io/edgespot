@@ -107,7 +107,7 @@ class Edgespot(object):
 #region Public Methods
 
     def init(self):
-        """Initialize the sunspot.
+        """Initialize the edgespot.
         """
 
         self.__logger.info("Starting process")
@@ -123,14 +123,14 @@ class Edgespot(object):
             device.init()
 
     def update(self):
-        """Update the sunspot.
+        """Update the edgespot.
         """
 
         for device in self.__devices:
             device.update()
 
     def shutdown(self):
-        """Shutdown the sunspot.
+        """Shutdown the edgespot.
         """
 
         for device in self.__devices:
