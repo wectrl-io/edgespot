@@ -8,7 +8,7 @@ import traceback
 from utils.logger import crate_log_file, get_logger
 from utils.settings import ApplicationSettings
 
-from sunspot import Sunspot
+from edgespot import Edgespot
 
 #region File Attributes
 
@@ -96,17 +96,17 @@ def main():
     # The mantra ...Ohmmm
 
     # Create
-    sunspot = Sunspot()
+    edgespot = Edgespot()
 
     # Init
-    sunspot.init()
+    edgespot.init()
 
     # Update
     while not __TIME_TO_STOP:
-        sunspot.update()
+        edgespot.update()
 
     # Shutdown
-    sunspot.shutdown()
+    edgespot.shutdown()
 
     __LOGGER.info("Application stopped.")
 
