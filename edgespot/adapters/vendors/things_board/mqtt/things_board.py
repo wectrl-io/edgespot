@@ -4,10 +4,10 @@
 import json
 import time
 
+import paho.mqtt.client as mqtt
+
 from edgespot.adapters.base_adapter import BaseAdapter
 from edgespot.utils.logger import get_logger
-
-import paho.mqtt.client as mqtt
 
 #region File Attributes
 
