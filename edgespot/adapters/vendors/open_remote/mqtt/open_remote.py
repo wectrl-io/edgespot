@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-from adapters.base_adapter import BaseAdapter
-from utils.logger import get_logger
+from edgespot.adapters.base_adapter import BaseAdapter
+from edgespot.utils.logger import get_logger
 
 import paho.mqtt.client as mqtt
 

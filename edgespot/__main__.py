@@ -6,10 +6,10 @@ import sys
 import traceback
 import argparse
 
-from utils.logger import crate_log_file, get_logger
-from utils.config import AppConfig
+from edgespot.utils.logger import crate_log_file, get_logger
+from edgespot.utils.config import AppConfig
 
-from edgespot import Edgespot
+from edgespot.edgespot import Edgespot
 
 #region File Attributes
 

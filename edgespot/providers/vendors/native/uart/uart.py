@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
-from providers.vendors.base_provider import BaseProvider
+from edgespot.providers.vendors.base_provider import BaseProvider
 
 from pymodbus.client.serial import ModbusSerialClient as ModbusClient
 # from pymodbus.client.sync import ModbusTcpClient as ModbusClient

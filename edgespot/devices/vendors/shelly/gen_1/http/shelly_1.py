@@ -3,10 +3,10 @@
 
 import json
 
-from utils.logger import get_logger
-from utils.timer import Timer
+from edgespot.utils.logger import get_logger
+from edgespot.utils.timer import Timer
 
-from devices.vendors.shelly.gen_1.http.shelly_http_base import ShellyHttpBase
+from edgespot.devices.vendors.shelly.gen_1.http.shelly_http_base import ShellyHttpBase
 
 class Shelly1(ShellyHttpBase):
 

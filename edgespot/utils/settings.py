@@ -5,7 +5,7 @@ import os
 
 import yaml
 
-from utils.yaml_loader import Loader
+from edgespot.utils.yaml_loader import Loader
 
 class ApplicationSettings:
     """Application settings class."""

@@ -3,8 +3,8 @@
 
 import json
 
-from utils.logger import get_logger
-from utils.timer import Timer
+from edgespot.utils.logger import get_logger
+from edgespot.utils.timer import Timer
 
 from .shelly_http_base import ShellyHttpBase
 

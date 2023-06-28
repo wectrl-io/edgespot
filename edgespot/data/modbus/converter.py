@@ -4,7 +4,7 @@
 from enum import Enum
 from struct import pack, unpack
 
-from data.modbus.parameter_type import ParameterType
+from edgespot.data.modbus.parameter_type import ParameterType
 
 #region File Attributes
 

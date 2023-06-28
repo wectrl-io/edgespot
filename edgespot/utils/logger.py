@@ -6,7 +6,7 @@ import os
 import logging
 from time import gmtime, strftime
 
-from utils.config import AppConfig
+from edgespot.utils.config import AppConfig
 
 #region Variables
 

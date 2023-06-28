@@ -5,9 +5,9 @@ import json
 import random
 import time
 
-from devices.base_device import BaseDevice
-from utils.timer import Timer
-from utils.logger import get_logger
+from edgespot.devices.base_device import BaseDevice
+from edgespot.utils.timer import Timer
+from edgespot.utils.logger import get_logger
 
 #region File Attributes
 

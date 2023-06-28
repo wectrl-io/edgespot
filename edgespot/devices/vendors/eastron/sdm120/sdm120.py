@@ -5,13 +5,13 @@ import json
 import random
 import time
 
-from devices.base_device import BaseDevice
-from data.modbus.function_code import FunctionCode
-from data.modbus.parameter import Parameter
-from data.modbus.parameter_type import ParameterType
-from data.modbus.converter import Converter
-from utils.timer import Timer
-from utils.logger import get_logger
+from edgespot.devices.base_device import BaseDevice
+from edgespot.data.modbus.function_code import FunctionCode
+from edgespot.data.modbus.parameter import Parameter
+from edgespot.data.modbus.parameter_type import ParameterType
+from edgespot.data.modbus.converter import Converter
+from edgespot.utils.timer import Timer
+from edgespot.utils.logger import get_logger
 
 #region File Attributes
 
