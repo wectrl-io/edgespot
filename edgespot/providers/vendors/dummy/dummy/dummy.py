@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
-from providers.vendors.base_provider import BaseProvider
+from edgespot.providers.vendors.base_provider import BaseProvider
 
 #region File Attributes
 

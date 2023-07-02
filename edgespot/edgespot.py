@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
-from adapters.adapter_factory import AdaptersFactory
-from devices.devices import Devices
-from providers.providers_factory import ProvidersFactory
-from devices.device_factory import DevicesFactory
+from edgespot.adapters.adapter_factory import AdaptersFactory
+from edgespot.devices.devices import Devices
+from edgespot.providers.providers_factory import ProvidersFactory
+from edgespot.devices.device_factory import DevicesFactory
 
-from utils.logger import get_logger
+from edgespot.utils.logger import get_logger
 
-from utils.config import AppConfig
+from edgespot.utils.config import AppConfig
 
-from utils.service_locator.service_locator import ServiceLocator
+from edgespot.utils.service_locator.service_locator import ServiceLocator
 
 #region File Attributes
 

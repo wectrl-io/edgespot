@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
-from utils.logger import get_logger
-from devices.vendors.shelly.shelly_base import ShellyBase
+from edgespot.utils.logger import get_logger
+from edgespot.devices.vendors.shelly.shelly_base import ShellyBase
 
 #region File Attributes
 

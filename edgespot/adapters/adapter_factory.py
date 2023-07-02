@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
-from adapters.vendors.things_board.mqtt.things_board import ThingsBoard as ThingsBoardMQTTClient
-from adapters.vendors.open_remote.mqtt.open_remote import OpenRemote as OpenRemoteMQTTClient
+from edgespot.adapters.vendors.things_board.mqtt.things_board import ThingsBoard as ThingsBoardMQTTClient
+from edgespot.adapters.vendors.open_remote.mqtt.open_remote import OpenRemote as OpenRemoteMQTTClient
 
-from exceptions.unsupported_adapter import UnsupportedAdapter
+from edgespot.exceptions.unsupported_adapter import UnsupportedAdapter
 
 #region File Attributes
 
