@@ -5,13 +5,13 @@ import json
 import random
 import time
 
-from edgespot.devices.base_device import BaseDevice
-from edgespot.data.modbus.function_code import FunctionCode
-from edgespot.data.modbus.parameter import Parameter
-from edgespot.data.modbus.parameter_type import ParameterType
-from edgespot.data.modbus.converter import Converter
-from edgespot.utils.timer import Timer
-from edgespot.utils.logger import get_logger
+from devices.base_device import BaseDevice
+from data.modbus.function_code import FunctionCode
+from data.modbus.parameter import Parameter
+from data.modbus.parameter_type import ParameterType
+from data.modbus.converter import Converter
+from utils.timer import Timer
+from utils.logger import get_logger
 
 #region File Attributes
 
@@ -69,16 +69,6 @@ class XY_MD02(BaseDevice):
         super().__init__(options, provider, adapter)
         self._vendor = "Donkger"
         self._model = "XY-MD02"
-
-        # Set logger.
-        self.__logger = get_logger(__name__)
-
-        # Set timer. (Default value is 1 second.)
-        update_period = self._get_option("update_period", 1)
-        update_period = float(update_period)
-        self.__update_period = update_period
-        self.__timer = Timer(self.__update_period)
-        self.__timer.set_callback(self.__timer_cb)
 
 #endregion
 
@@ -164,19 +154,29 @@ class XY_MD02(BaseDevice):
 
 #region Public Methods
 
-    def init(self):
+    async def init(self):
+
+        # Set logger.
+        self.__logger = get_logger(__name__)
+
+        # Set timer. (Default value is 1 second.)
+        update_period = self._get_option("update_period", 1)
+        update_period = float(update_period)
+        self.__update_period = update_period
+        self.__timer = Timer(self.__update_period)
+        self.__timer.set_callback(self.__timer_cb)
 
         self.__setup_registers()
 
         self._adapter.connect()
         # self._adapter.subscribe(gpio_state=self.__get_gpio_status, callback=self.__on_message)
 
-    def update(self):
+    async def update(self):
 
         self.__timer.update()
         self._adapter.update()
 
-    def shutdown(self):
+    async def shutdown(self):
 
         self._adapter.disconnect()
 

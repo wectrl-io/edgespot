@@ -5,12 +5,12 @@
 Providers factory
 """
 
-from edgespot.providers.vendors.dummy.dummy.dummy import Dummy
-from edgespot.providers.vendors.ebyte.nb114.nb114 import NB114
-from edgespot.providers.vendors.zlan.d_5143d.d_5143d import D_5143D
-from edgespot.providers.vendors.native.uart.uart import NativeUart
+from providers.vendors.dummy.dummy.dummy import Dummy
+from providers.vendors.ebyte.nb114.nb114 import NB114
+from providers.vendors.zlan.d_5143d.d_5143d import D_5143D
+from providers.vendors.native.uart.uart import NativeUart
 
-from edgespot.exceptions.unsupported_provider import UnsupportedProvider
+from exceptions.unsupported_provider import UnsupportedProvider
 
 #region File Attributes
 

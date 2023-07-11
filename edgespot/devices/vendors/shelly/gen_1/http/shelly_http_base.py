@@ -3,8 +3,8 @@
 
 import json
 
-from edgespot.utils.logger import get_logger
-from edgespot.devices.vendors.shelly.gen_1.gen1_device import Gen1Device
+from utils.logger import get_logger
+from devices.vendors.shelly.gen_1.gen1_device import Gen1Device
 
 import requests
 

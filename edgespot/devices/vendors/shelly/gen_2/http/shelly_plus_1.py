@@ -3,8 +3,8 @@
 
 import json
 
-from edgespot.utils.logger import get_logger
-from edgespot.utils.timer import Timer
+from utils.logger import get_logger
+from utils.timer import Timer
 
 from .shelly_http_base import ShellyHttpBase
 
@@ -70,16 +70,6 @@ class ShellyPlus1(ShellyHttpBase):
         self._vendor = "Alterco"
         self._model = "ShellyPlus1-GEN2"
 
-        # Set logger.
-        self.__logger = get_logger(__name__)
-
-        # Set timer. (Default value is 1 second.)
-        update_period = self._get_option("update_period", 1)
-        update_period = float(update_period)
-        self.__update_period = update_period
-        self.__timer = Timer(self.__update_period)
-        self.__timer.set_callback(self.__timer_cb)
-
 #endregion
 
 #region Public Methods (API)
@@ -110,16 +100,26 @@ class ShellyPlus1(ShellyHttpBase):
 
 #region Public Methods
 
-    def init(self):
+    async def init(self):
+
+        # Set logger.
+        self.__logger = get_logger(__name__)
+
+        # Set timer. (Default value is 1 second.)
+        update_period = self._get_option("update_period", 1)
+        update_period = float(update_period)
+        self.__update_period = update_period
+        self.__timer = Timer(self.__update_period)
+        self.__timer.set_callback(self.__timer_cb)
 
         self._adapter.connect()
 
-    def update(self):
+    async def update(self):
 
         self.__timer.update()
         self._adapter.update()
 
-    def shutdown(self):
+    async def shutdown(self):
 
         self._adapter.disconnect()
 

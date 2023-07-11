@@ -5,7 +5,7 @@ import os
 
 import yaml
 
-from edgespot.utils.yaml_loader import Loader
+from utils.yaml_loader import Loader
 
 class AppConfig:
     """Application configuration class."""
@@ -90,8 +90,6 @@ class AppConfig:
         if AppConfig.__instance is not None:
             raise Exception("This class is a singleton!")
 
-        AppConfig.__instance = self
-
         self.__file_name = ""
 
         if file_name is None:
@@ -103,7 +101,10 @@ class AppConfig:
         else:
             self.__file_name = file_name
 
-        self.load()
+        # await self.load()
+
+        AppConfig.__instance = self
+
 
 #endregion
 
@@ -278,7 +279,7 @@ class AppConfig:
 
     @staticmethod
     def get_instance(file_path=None):
-        """Singelton instance."""
+        """Singleton instance."""
 
         if AppConfig.__instance is None:
             AppConfig(file_path)

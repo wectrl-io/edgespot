@@ -5,11 +5,12 @@ import signal
 import sys
 import traceback
 import argparse
+import asyncio
 
-from edgespot.utils.logger import crate_log_file, get_logger
-from edgespot.utils.config import AppConfig
+from utils.logger import crate_log_file, get_logger
+from utils.config import AppConfig
 
-from edgespot.edgespot import Edgespot
+from edgespot import Edgespot
 
 #region File Attributes
 
@@ -65,11 +66,15 @@ def interrupt_handler(signum, frame):
     # Raise the termination flag.
     __TIME_TO_STOP = True
 
-def main():
+async def main():
     """Main function.
     """
 
     global __TIME_TO_STOP, __LOGGER
+
+    # Create log.
+    crate_log_file()
+    __LOGGER = get_logger(__name__)
 
     # Add signal handler.
     signal.signal(signal.SIGINT, interrupt_handler)
@@ -89,10 +94,6 @@ def main():
     # Read settings content.
     settings.load()
 
-    # Create log.
-    crate_log_file()
-    __LOGGER = get_logger(__name__)
-
     # Wait for settings.
     if not settings.exists:
         settings.create_default()
@@ -108,20 +109,20 @@ def main():
     edgespot = Edgespot()
 
     # Init
-    edgespot.init()
+    await edgespot.init()
 
     # Update
     while not __TIME_TO_STOP:
-        edgespot.update()
+        await edgespot.update()
 
     # Shutdown
-    edgespot.shutdown()
+    await edgespot.shutdown()
 
     __LOGGER.info("Application stopped.")
 
 if __name__ == "__main__":
-    try:
-        main()
-    except Exception as exception:
-        __LOGGER.error(traceback.format_exc())
-        sys.exit(0)
+    asyncio.run(main())
+    # try:
+    # except Exception as exception:
+    #     __LOGGER.info(traceback.format_exc())
+    #     sys.exit(0)

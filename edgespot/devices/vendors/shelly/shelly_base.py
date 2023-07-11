@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
-from edgespot.utils.logger import get_logger
-from edgespot.devices.base_device import BaseDevice
+from utils.logger import get_logger
+from devices.base_device import BaseDevice
 
 #region File Attributes
 

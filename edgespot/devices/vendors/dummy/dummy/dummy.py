@@ -4,10 +4,10 @@
 import random
 import json
 
-from edgespot.utils.logger import get_logger
-from edgespot.utils.timer import Timer
+from utils.logger import get_logger
+from utils.timer import Timer
 
-from edgespot.devices.base_device import BaseDevice
+from devices.base_device import BaseDevice
 
 #region File Attributes
 
@@ -108,16 +108,16 @@ class Dummy(BaseDevice):
 
 #region Public Methods
 
-    def init(self):
+    async def init(self):
 
         self._adapter.connect()
 
-    def update(self):
+    async def update(self):
 
         self.__timer.update()
         self._adapter.update()
 
-    def shutdown(self):
+    async def shutdown(self):
 
         self._adapter.disconnect()
 

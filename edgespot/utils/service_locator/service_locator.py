@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
-from edgespot.exceptions.invalid_service_name import InvalidServiceName
-from edgespot.exceptions.invalid_service_instance import InvalidServiceInstance
-from edgespot.exceptions.existing_service_name import ExistingServiceName
-from edgespot.exceptions.existing_service_instance import ExistingServiceInstance
-from edgespot.exceptions.not_existing_service import NotExistingService
+from exceptions.invalid_service_name import InvalidServiceName
+from exceptions.invalid_service_instance import InvalidServiceInstance
+from exceptions.existing_service_name import ExistingServiceName
+from exceptions.existing_service_instance import ExistingServiceInstance
+from exceptions.not_existing_service import NotExistingService
 
 
 class ServiceLocator():

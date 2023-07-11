@@ -3,10 +3,10 @@
 
 import json
 
-from edgespot.utils.logger import get_logger
-from edgespot.utils.timer import Timer
+from utils.logger import get_logger
+from utils.timer import Timer
 
-from edgespot.devices.vendors.shelly.gen_1.http.shelly_http_base import ShellyHttpBase
+from devices.vendors.shelly.gen_1.http.shelly_http_base import ShellyHttpBase
 
 class Shelly3EM(ShellyHttpBase):
 
@@ -144,16 +144,16 @@ class Shelly3EM(ShellyHttpBase):
 
 #region Public Methods
 
-    def init(self):
+    async def init(self):
 
         self._adapter.connect()
 
-    def update(self):
+    async def update(self):
 
         self.__timer.update()
         self._adapter.update()
 
-    def shutdown(self):
+    async def shutdown(self):
 
         self._adapter.disconnect()
 

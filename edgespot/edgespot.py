@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
-from edgespot.adapters.adapter_factory import AdaptersFactory
-from edgespot.devices.devices import Devices
-from edgespot.providers.providers_factory import ProvidersFactory
-from edgespot.devices.device_factory import DevicesFactory
+from adapters.adapter_factory import AdaptersFactory
+from devices.devices import Devices
+from providers.providers_factory import ProvidersFactory
+from devices.device_factory import DevicesFactory
 
-from edgespot.utils.logger import get_logger
+from utils.logger import get_logger
 
-from edgespot.utils.config import AppConfig
+from utils.config import AppConfig
 
-from edgespot.utils.service_locator.service_locator import ServiceLocator
+from utils.service_locator.service_locator import ServiceLocator
 
 #region File Attributes
 
@@ -72,7 +72,17 @@ class Edgespot(object):
         """Constructor.
         """
 
-        # Set logger.
+        pass
+
+#endregion
+
+#region Public Methods
+
+    async def init(self):
+        """Initialize the edgespot.
+        """
+
+                # Set logger.
         self.__logger = get_logger(__name__)
 
         # Get instance of the service locator.
@@ -84,7 +94,7 @@ class Edgespot(object):
         # Create and add adapters.
         adapters = self.__settings.config["adapters"]
         for adapter in adapters:
-            adapter_instance = AdaptersFactory.create(adapter)
+            adapter_instance = await AdaptersFactory.create(adapter)
             self.__service_locator.add(adapter["name"], adapter_instance)
 
         # Create and add providers.
@@ -102,14 +112,6 @@ class Edgespot(object):
             device_instance = DevicesFactory.create(device, provider, adapter)
             self.__devices.append(device_instance)
 
-#endregion
-
-#region Public Methods
-
-    def init(self):
-        """Initialize the edgespot.
-        """
-
         self.__logger.info("Starting process")
 
         # print(f"{__name__}.{__class__}.{inspect.stack()[0][0].f_code.co_name}")
@@ -120,21 +122,21 @@ class Edgespot(object):
 
         # Create slaves.
         for device in self.__devices:
-            device.init()
+            await device.init()
 
-    def update(self):
+    async def update(self):
         """Update the edgespot.
         """
 
         for device in self.__devices:
-            device.update()
+            await device.update()
 
-    def shutdown(self):
+    async def shutdown(self):
         """Shutdown the edgespot.
         """
 
         for device in self.__devices:
-            device.shutdown()
+            await device.shutdown()
 
         self.__logger.info("Stopping process")
 

@@ -6,7 +6,7 @@ import os
 import logging
 from time import gmtime, strftime
 
-from edgespot.utils.config import AppConfig
+from utils.config import AppConfig
 
 #region Variables
 
@@ -72,7 +72,8 @@ def get_logger(module_name):
     __MODULES_NAMES.append(module_name)
 
     # Get debug level.
-    debug_level = AppConfig.get_instance().debug_level
+    cfg = AppConfig.get_instance()
+    debug_level = cfg.debug_level
 
     # Create console handler.
     console_handler = logging.StreamHandler()

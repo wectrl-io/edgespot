@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
+import asyncio
+
 import paho.mqtt.client as mqtt
 
-from edgespot.adapters.base_adapter import BaseAdapter
-from edgespot.utils.logger import get_logger
+from adapters.base_adapter import BaseAdapter
+from utils.logger import get_logger
 
 #region File Attributes
 
@@ -318,7 +320,7 @@ class OpenRemote(BaseAdapter):
 #region Static Methods
 
     @staticmethod
-    def get_instance(options):
+    async def get_instance(options):
         """Get instance of the Open Remote MQTT Client.
 
         Args:
