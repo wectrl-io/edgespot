@@ -36,7 +36,6 @@ __class_name__ = ""
 
 #endregion
 
-
 def long_description():
     """Long description reader.
 
@@ -46,11 +45,21 @@ def long_description():
     with open('README.md', encoding='utf-8') as f:
         return f.read()
 
-install_requires = ["certifi==2022.12.7", "charset-normalizer==3.1.0",
-                    "hassapi==0.1.1", "idna==3.4",
-                    "paho-mqtt==1.6.1", "pymodbus==3.2.2",
-                    "PyYAML==6.0", "requests==2.28.2",
-                    "urllib3==1.26.15"],
+install_requires = ["backoff==2.2.1",
+                    "certifi==2022.12.7",
+                    "charset-normalizer==3.1.0",
+                    "hassapi==0.1.1",
+                    "huawei-solar==2.2.6",
+                    "idna==3.4",
+                    "paho-mqtt==1.6.1",
+                    "pymodbus==3.1.3",
+                    "pyserial==3.5",
+                    "pyserial-asyncio==0.6",
+                    "pytz==2023.3",
+                    "PyYAML==6.0",
+                    "requests==2.28.2",
+                    "typing_extensions==4.7.1",
+                    "urllib3==1.26.15"]
 
 setup(
     name="edgespot",
