@@ -73,7 +73,15 @@ class OpenRemote(BaseAdapter):
 
     __is_connected_flag = False
     """Is connected flag.
-    """    
+    """
+
+    __username = ""
+    """User name.
+    """
+
+    __password = ""
+    """Password field.
+    """
 
 #endregion
 
@@ -225,58 +233,71 @@ class OpenRemote(BaseAdapter):
         # Create logger.
         self.__logger = get_logger(__name__)
 
-        # Get host name to the cloud.
+        # Get host name from options.
         self.__host = self._get_option("host")
 
-        # Get port to the cloud.
+        # Get port from options.
         port = self._get_option("port")
         if 1 < port > 65535 :
             raise ValueError(f"Invalid parameter port = {port}")
         self.__port = port
 
-        # Get username to the cloud.
+        # Get username from options.
         username = self._get_option("username")
-        if 1 < username > 65535 :
-            raise ValueError(f"Invalid parameter username = {username}")
-        self.__username = username
+        if username is None:
+            self.__username = None
+        else:
+            self.__username = username
 
-        # Get password to the cloud.
+        # Get password from options.
         password = self._get_option("password")
-        if 1 < password > 65535 :
-            raise ValueError(f"Invalid parameter password = {password}")
-        self.__password = password
+        if password is None:
+            self.__password = None
+        else:
+            self.__password = password
 
-        # Get keep alive time to the cloud.
+        # Get keep alive time from options.
         keep_alive = self._get_option("keep_alive")
         if 1 < keep_alive > 3600 :
             raise ValueError(f"Invalid parameter keep_alive = {keep_alive}")
         self.__keep_alive = keep_alive
- 
-        # Get token data.
+
+        # Get token from options.
         client_id = self._get_option("client_id")
         if client_id == "":
             raise ValueError(f"Invalid parameter client_id = {client_id}")
         self.__client_id = client_id
 
-        # Create the MQTT client.
-        self.__mqtt_client = mqtt.Client(client_id=self.__client_id, clean_session=True)
-        self.__mqtt_client.on_publish = self.__on_publish
-        self.__mqtt_client.on_message = self.__on_message
-        self.__mqtt_client.on_connect = self.__on_connect
-        self.__mqtt_client.on_subscribe = self.__on_subscribe
-        self.__mqtt_client.on_disconnect = self.__on_disconnect
-        self.__mqtt_client.username_pw_set(self.__client_id)
+        # TODO: Implement async client.
+        # TODO: Migrate to generic client, and pass it to service provider.
+
+        if self.__username is None and self.__password is None:
+            # No password mode!
+            pass
+
+        else:
+            # Password mode.
+            pass
+
+        # # Create the MQTT client.
+        # self.__mqtt_client = mqtt.Client(client_id=self.__client_id, clean_session=True)
+        # self.__mqtt_client.on_publish = self.__on_publish
+        # self.__mqtt_client.on_message = self.__on_message
+        # self.__mqtt_client.on_connect = self.__on_connect
+        # self.__mqtt_client.on_subscribe = self.__on_subscribe
+        # self.__mqtt_client.on_disconnect = self.__on_disconnect
+        # self.__mqtt_client.username_pw_set(self.__client_id)
 
 
-        if self.__mqtt_client is None:
-            raise ValueError("Invalid MQTT client instance.")
+        # if self.__mqtt_client is None:
+        #     raise ValueError("Invalid MQTT client instance.")
 
-        if self.is_connected:
-            return
+        # if self.is_connected:
+        #     return
 
         # Connect to the broker.
-        self.__mqtt_client.connect(host=self.__host, port=self.__port, keepalive=self.__keep_alive)
-        self.__mqtt_client.loop()
+        # self.__mqtt_client.connect(host=self.__host, port=self.__port, keepalive=self.__keep_alive)
+        # self.__mqtt_client.loop()
 
     async def update(self):
         """Update the MQTT client.
