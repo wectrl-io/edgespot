@@ -126,7 +126,7 @@ class ThingsBoard(BaseAdapter):
         # Subscribing to receive RPC requests
         self.__mqtt_client.subscribe('v1/devices/me/rpc/request/+')
 
-    def update(self):
+    await def update(self):
         """Update the MQTT client.
 
         Raises:

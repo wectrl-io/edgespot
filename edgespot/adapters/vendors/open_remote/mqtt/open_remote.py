@@ -265,7 +265,7 @@ class OpenRemote(BaseAdapter):
         self.__mqtt_client.connect(host=self.__host, port=self.__port, keepalive=self.__keep_alive)
         self.__mqtt_client.loop()
 
-    def update(self):
+    await def update(self):
         """Update the MQTT client.
 
         Raises:

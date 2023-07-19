@@ -146,12 +146,12 @@ class Shelly3EM(ShellyHttpBase):
 
     async def init(self):
 
-        self._adapter.connect()
+        await self._adapter.connect()
 
     async def update(self):
 
-        self.__timer.update()
-        self._adapter.update()
+        await self.__timer.update()
+        await self._adapter.update()
 
     async def shutdown(self):
 

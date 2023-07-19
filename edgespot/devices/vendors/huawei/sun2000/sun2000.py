@@ -138,9 +138,9 @@ class SUN2000(BaseDevice):
             self.__bridge = await HuaweiSolarBridge.create(host=self.__host, port=self.__port)
 
         if self.__timer is not None:
-            self.__timer.update()
+            await self.__timer.update()
 
-    def shutdown(self):
+    await def shutdown(self):
 
         pass
 

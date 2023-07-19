@@ -120,12 +120,12 @@ class Shelly1L(ShellyHttpBase):
         self.__timer = Timer(self.__update_period)
         self.__timer.set_callback(self.__timer_cb)
 
-        self._adapter.connect()
+        await self._adapter.connect()
 
     async def update(self):
 
-        self.__timer.update()
-        self._adapter.update()
+        await self.__timer.update()
+        await self._adapter.update()
 
     async def shutdown(self):
 

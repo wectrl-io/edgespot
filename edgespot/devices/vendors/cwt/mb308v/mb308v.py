@@ -70,16 +70,6 @@ class CWTMB308V(BaseDevice):
         self._vendor = "cwt"
         self._model = "mb_308v"
 
-        # Set logger.
-        self.__logger = get_logger(__name__)
-
-        # Set timer. (Default value is 1 second.)
-        update_period = self._get_option("update_period", 1)
-        update_period = float(update_period)
-        self.__update_period = update_period
-        self.__timer = Timer(self.__update_period)
-        self.__timer.set_callback(self.__timer_cb)
-
 #endregion
 
 #region Private Methods
@@ -187,17 +177,27 @@ class CWTMB308V(BaseDevice):
 
 #region Public Methods
 
-    def init(self):
+    await def init(self):
 
-        self._adapter.connect()
+        # Set logger.
+        self.__logger = get_logger(__name__)
+
+        # Set timer. (Default value is 1 second.)
+        update_period = self._get_option("update_period", 1)
+        update_period = float(update_period)
+        self.__update_period = update_period
+        self.__timer = Timer(self.__update_period)
+        self.__timer.set_callback(self.__timer_cb)
+
+        await self._adapter.connect()
         # self._adapter.subscribe(gpio_state=self.__get_gpio_status, callback=self.__on_message)
 
-    def update(self):
+    await def update(self):
 
-        self.__timer.update()
-        self._adapter.update()
+        await self.__timer.update()
+        await self._adapter.update()
 
-    def shutdown(self):
+    await def shutdown(self):
 
         self._adapter.disconnect()
 

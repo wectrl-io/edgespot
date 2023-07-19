@@ -109,7 +109,7 @@ class Timer:
         else:
             self.__last_time = value
 
-    def update(self):
+    await def update(self):
         """Update cycle of the timer."""
 
         # Recalculate passed time.

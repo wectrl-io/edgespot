@@ -238,19 +238,19 @@ class SDM120(BaseDevice):
 
 #region Public Methods
 
-    def init(self):
+    await def init(self):
 
         self.__setup_registers()
 
-        self._adapter.connect()
+        await self._adapter.connect()
         # self._adapter.subscribe(gpio_state=self.__get_gpio_status, callback=self.__on_message)
 
-    def update(self):
+    await def update(self):
 
-        self.__timer.update()
-        self._adapter.update()
+        await self.__timer.update()
+        await self._adapter.update()
 
-    def shutdown(self):
+    await def shutdown(self):
 
         self._adapter.disconnect()
 
