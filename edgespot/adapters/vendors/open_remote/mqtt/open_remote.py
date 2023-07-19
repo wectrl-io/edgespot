@@ -96,39 +96,6 @@ class OpenRemote(BaseAdapter):
     def __init__(self, options):
         super().__init__(options)
 
-        # Create logger.
-        self.__logger = get_logger(__name__)
-
-        # Get host name to the cloud.
-        self.__host = self._get_option("host")
-
-        # Get port to the cloud.
-        port = self._get_option("port")
-        if 1 < port > 65535 :
-            raise ValueError(f"Invalid parameter port = {port}")
-        self.__port = port
-
-        # Get keep alive time to the cloud.
-        keep_alive = self._get_option("keep_alive")
-        if 1 < keep_alive > 3600 :
-            raise ValueError(f"Invalid parameter keep_alive = {keep_alive}")
-        self.__keep_alive = keep_alive
-
-        # Get token data.
-        client_id = self._get_option("client_id")
-        if client_id == "":
-            raise ValueError(f"Invalid parameter client_id = {client_id}")
-        self.__client_id = client_id
-
-        # Create the MQTT client.
-        self.__mqtt_client = mqtt.Client(client_id=self.__client_id, clean_session=True)
-        self.__mqtt_client.on_publish = self.__on_publish
-        self.__mqtt_client.on_message = self.__on_message
-        self.__mqtt_client.on_connect = self.__on_connect
-        self.__mqtt_client.on_subscribe = self.__on_subscribe
-        self.__mqtt_client.on_disconnect = self.__on_disconnect
-        self.__mqtt_client.username_pw_set(self.__client_id)
-
 #endregion
 
 #region Private Methods (API)
@@ -251,9 +218,55 @@ class OpenRemote(BaseAdapter):
 
 #region Public Methods (Base Class Implementation)
 
-    def connect(self):
+    async def connect(self):
         """Connect to MQTT broker.
         """
+
+        # Create logger.
+        self.__logger = get_logger(__name__)
+
+        # Get host name to the cloud.
+        self.__host = self._get_option("host")
+
+        # Get port to the cloud.
+        port = self._get_option("port")
+        if 1 < port > 65535 :
+            raise ValueError(f"Invalid parameter port = {port}")
+        self.__port = port
+
+        # Get username to the cloud.
+        username = self._get_option("username")
+        if 1 < username > 65535 :
+            raise ValueError(f"Invalid parameter username = {username}")
+        self.__username = username
+
+        # Get password to the cloud.
+        password = self._get_option("password")
+        if 1 < password > 65535 :
+            raise ValueError(f"Invalid parameter password = {password}")
+        self.__password = password
+
+        # Get keep alive time to the cloud.
+        keep_alive = self._get_option("keep_alive")
+        if 1 < keep_alive > 3600 :
+            raise ValueError(f"Invalid parameter keep_alive = {keep_alive}")
+        self.__keep_alive = keep_alive
+ 
+        # Get token data.
+        client_id = self._get_option("client_id")
+        if client_id == "":
+            raise ValueError(f"Invalid parameter client_id = {client_id}")
+        self.__client_id = client_id
+
+        # Create the MQTT client.
+        self.__mqtt_client = mqtt.Client(client_id=self.__client_id, clean_session=True)
+        self.__mqtt_client.on_publish = self.__on_publish
+        self.__mqtt_client.on_message = self.__on_message
+        self.__mqtt_client.on_connect = self.__on_connect
+        self.__mqtt_client.on_subscribe = self.__on_subscribe
+        self.__mqtt_client.on_disconnect = self.__on_disconnect
+        self.__mqtt_client.username_pw_set(self.__client_id)
+
 
         if self.__mqtt_client is None:
             raise ValueError("Invalid MQTT client instance.")
@@ -265,7 +278,7 @@ class OpenRemote(BaseAdapter):
         self.__mqtt_client.connect(host=self.__host, port=self.__port, keepalive=self.__keep_alive)
         self.__mqtt_client.loop()
 
-    await def update(self):
+    async def update(self):
         """Update the MQTT client.
 
         Raises:
@@ -281,7 +294,7 @@ class OpenRemote(BaseAdapter):
         # Continue monitoring the incoming messages for subscribed topic.
         self.__mqtt_client.loop()
 
-    def disconnect(self):
+    async def disconnect(self):
         """Disconnect from MQTT broker.
 
         Raises:
